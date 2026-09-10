@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>POS System - Administrator Dashboard</title>
+  <meta name="description" content="Dashboard manajemen toko dan sistem kasir point of sale.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ====================================================================
+         1. SIDEBAR (Gambar 3 - Changx Reference)
+         ==================================================================== -->
+    <aside class="sidebar" id="mainSidebar">
+      <!-- Brand Header with Integrated Toggle -->
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-left">
+          <div class="sidebar-brand-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 3v18M3 12h18"></path>
+            </svg>
+          </div>
+          <div class="sidebar-brand-text">
+            <div class="brand-title" id="navStoreName">BrightPOS</div>
+            <div class="brand-sub" data-i18n="brand_sub">Sistem Manajemen Toko</div>
+          </div>
+        </div>
+        <!-- Sidebar Toggle Button -->
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Kecilkan / Perbesar Menu" data-i18n-title="sidebar_toggle_title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navigation Menu Groups -->
+      <div class="sidebar-menu">
+        
+        <!-- Group 1: Main Menu -->
+        <div class="menu-group">
+          <div class="menu-group-label" data-i18n="group_main">Main Menu</div>
+          <button type="button" class="nav-item-btn active" data-tab="tabDashboard" data-tooltip="Overview" data-i18n-tooltip="nav_overview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+            <span data-i18n="nav_overview">Overview</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-tab="tabRiwayat" data-tooltip="Orders / Transaksi" data-i18n-tooltip="nav_orders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span data-i18n="nav_orders">Orders / Transaksi</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-tab="tabKategori" data-tooltip="Categories" data-i18n-tooltip="nav_categories">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            </svg>
+            <span data-i18n="nav_categories">Categories</span>
+          </button>
+        </div>
+
+        <!-- Group 2: Inventory -->
+        <div class="menu-group">
+          <div class="menu-group-label" data-i18n="group_inventory">Inventory</div>
+          <button type="button" class="nav-item-btn" data-tab="tabProduk" data-tooltip="Products" data-i18n-tooltip="nav_products">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span data-i18n="nav_products">Products</span>
+          </button>
+        </div>
+
+        <!-- Group 3: Report -->
+        <div class="menu-group">
+          <div class="menu-group-label" data-i18n="group_report">Report & Analytics</div>
+          <button type="button" class="nav-item-btn" data-tab="tabLaporan" data-tooltip="Reporting">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span data-i18n="nav_reporting">Reporting</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-tab="tabAnalytics" data-tooltip="Analytics">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+              <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <span data-i18n="nav_analytics">Analytics & Insights</span>
+          </button>
+        </div>
+
+        <!-- Group 4: Settings -->
+        <div class="menu-group">
+          <div class="menu-group-label" data-i18n="group_settings">Settings</div>
+          <button type="button" class="nav-item-btn" data-tab="tabKasirStaff" data-tooltip="User Management">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span data-i18n="nav_users">User Management</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-tab="tabPengaturan" data-tooltip="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span data-i18n="nav_settings">Settings</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- User Profile at Bottom of Sidebar -->
+      <div class="sidebar-footer-profile">
+        <div class="profile-info-group">
+          <div class="profile-avatar-circle" id="userAvatarText">AD</div>
+          <div class="profile-meta">
+            <div class="profile-name" id="userProfileName">Administrator</div>
+            <div class="profile-email" id="userProfileEmail">admin@tokosaya.com</div>
+          </div>
+        </div>
+        <button type="button" class="btn-logout-icon" id="btnLogout" title="Keluar dari Sistem" data-i18n-title="btn_logout_title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         2. MAIN VIEWPORT & TOPBAR (Gambar 1 - Brightpos Reference)
+         ==================================================================== -->
+    <div class="main-viewport">
+      
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="search-box-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="topbar-search-input" id="globalSearchInput" placeholder="Cari menu, transaksi, atau kasir..." data-i18n-placeholder="search_placeholder">
+          </div>
+          <button type="button" class="btn-topbar-action" id="btnExportTop" title="Export Laporan" data-i18n-title="btn_export_title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span data-i18n="btn_export">Export</span>
+          </button>
+          <div class="notif-btn-wrapper">
+          <button type="button" class="btn-topbar-action" id="btnNotifToggle" title="Notifikasi Toko" data-i18n-title="btn_notif_title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span data-i18n="btn_notification">Notifikasi</span>
+            <span class="notif-badge-dot" id="notifBadgeDot"></span>
+          </button>
+          <!-- Notification Panel -->
+          <div class="notif-panel-wrap" id="notifPanel">
+            <div class="notif-panel">
+              <div class="notif-panel-header">
+                <span class="notif-panel-title" id="notifPanelTitle">Notifikasi</span>
+                <button type="button" class="notif-panel-clear" id="btnClearNotif">Hapus Semua</button>
+              </div>
+              <div class="notif-panel-body" id="notifPanelBody">
+                <div class="notif-empty" id="notifEmptyMsg">Tidak ada notifikasi baru.</div>
+              </div>
+              <div class="notif-panel-footer" id="notifPanelFooter">Diperbarui baru saja</div>
+            </div>
+          </div>
+          </div>
+          <button type="button" class="btn-topbar-action" id="btnQuickLangToggle" title="Ganti Bahasa / Switch Language" data-i18n-title="btn_lang_toggle_title" style="gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span id="quickLangBadge" style="font-weight: 700; font-size: 11px; background: var(--primary-light); color: var(--primary); padding: 1px 6px; border-radius: 4px;">ID</span>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <div class="topbar-date-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span id="topbarLiveDate">26 Agustus 2026</span>
+          </div>
+
+        </div>
+      </header>
+
+      <!-- Main Content Tabs -->
+      <main class="content-body">
+
+        <!-- ================================================================
+             TAB 1: OVERVIEW DASHBOARD (Gambar 1 - Brightpos Reference)
+             ================================================================ -->
+        <section class="tab-pane active" id="tabDashboard">
+          
+          <!-- Header Bar -->
+          <div class="dash-header-bar">
+            <div class="dash-welcome-text">
+              <h1 id="dashGreetingTitle">Welcome to BrightPOS</h1>
+              <p data-i18n="dash_overview_sub">Clear overview of your store performance</p>
+            </div>
+            <div class="dash-header-actions">
+              <div class="outlet-badge-pill" id="dashOutletPill">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span id="dashKodeTokoBadge">Main Outlet</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Top KPI Metric Cards (Gambar 1) -->
+          <div class="kpi-cards-grid">
+            <!-- 1. Total Income -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="total_income">Total Income</span>
+                <div class="kpi-card-icon-wrap green">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                    <circle cx="12" cy="12" r="2"></circle>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="dashTotalIncome">Rp 0</div>
+              <div class="kpi-card-trend up">
+                <span>↑ +12.4%</span> <span style="color: var(--text-muted); font-weight: normal;" data-i18n="this_week">this week</span>
+              </div>
+            </div>
+
+            <!-- 2. Total Expense -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="total_expense">Total Expense</span>
+                <div class="kpi-card-icon-wrap orange">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="dashTotalExpense">Rp 0</div>
+              <div class="kpi-card-trend down">
+                <span>↓ -3.2%</span> <span style="color: var(--text-muted); font-weight: normal;" data-i18n="this_week">this week</span>
+              </div>
+            </div>
+
+            <!-- 3. Net Profit -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="net_profit">Net Profit</span>
+                <div class="kpi-card-icon-wrap teal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="dashNetProfit">Rp 0</div>
+              <div class="kpi-card-trend up">
+                <span>↑ +8.1%</span> <span style="color: var(--text-muted); font-weight: normal;" data-i18n="this_week">this week</span>
+              </div>
+            </div>
+
+            <!-- 4. Total Orders -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="total_orders">Total Orders</span>
+                <div class="kpi-card-icon-wrap blue">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="dashTotalOrders">0</div>
+              <div class="kpi-card-trend up">
+                <span>↑ +5.9%</span> <span style="color: var(--text-muted); font-weight: normal;" data-i18n="this_week">this week</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main 2-Column Grid (Left 68% / Right 32%) -->
+          <div class="dash-main-grid">
+            
+            <!-- LEFT COLUMN -->
+            <div class="dash-left-column">
+              
+              <!-- 1. Daily Orders Curved Chart (Gambar 1) -->
+              <div class="ui-card">
+                <div class="ui-card-header">
+                  <div class="ui-card-title-group">
+                    <h2 data-i18n="daily_orders">Daily Orders</h2>
+                    <p data-i18n="track_order_volume">Track order volume trends</p>
+                  </div>
+                  <div class="auto-update-pill" id="btnRefreshChart">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    <span data-i18n="auto_update">Auto Update</span>
+                  </div>
+                </div>
+
+                <!-- Dynamic Soft Curved SVG Chart -->
+                <div class="chart-box" id="dashboardDailyChartBox">
+                  <div style="text-align: center; color: var(--text-muted); padding-top: 80px; font-size: 12px;">Memuat grafik penjualan harian...</div>
+                </div>
+              </div>
+
+              <!-- Sub Grid: Top Selling & Recent Transactions -->
+              <div class="dash-sub-grid">
+                
+                <!-- Card 2: Top Selling Products (Gambar 1) -->
+                <div class="ui-card">
+                  <div class="ui-card-header">
+                    <div class="ui-card-title-group">
+                      <h2 data-i18n="top_selling_title">Top Selling Products</h2>
+                      <p data-i18n="top_selling_sub">Kategori paling diminati</p>
+                    </div>
+                    <button type="button" class="btn-card-action-icon">•••</button>
+                  </div>
+
+                  <div class="top-selling-list" id="topSellingContainer">
+                    <div class="selling-bar-row">
+                      <div class="selling-bar-label">
+                        <span>Makanan Utama</span>
+                        <span class="selling-bar-badge pine">34 item</span>
+                      </div>
+                      <div class="selling-bar-track">
+                        <div class="selling-bar-fill pine" style="width: 75%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="selling-bar-row">
+                      <div class="selling-bar-label">
+                        <span>Minuman & Kopi</span>
+                        <span class="selling-bar-badge orange">68 item</span>
+                      </div>
+                      <div class="selling-bar-track">
+                        <div class="selling-bar-fill orange" style="width: 90%;"></div>
+                      </div>
+                    </div>
+
+                    <div class="selling-bar-row">
+                      <div class="selling-bar-label">
+                        <span>Snack & Dessert</span>
+                        <span class="selling-bar-badge teal">24 item</span>
+                      </div>
+                      <div class="selling-bar-track">
+                        <div class="selling-bar-fill teal" style="width: 50%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3: Recent Transactions (Gambar 1) -->
+                <div class="ui-card">
+                  <div class="ui-card-header">
+                    <div class="ui-card-title-group">
+                      <h2 data-i18n="recent_trx_title">Recent Transactions</h2>
+                      <p data-i18n="recent_trx_sub">Aktivitas penjualan langsung</p>
+                    </div>
+                    <button type="button" class="btn-card-action-icon">•••</button>
+                  </div>
+
+                  <div class="recent-trx-list" id="dashRecentTrxList">
+                    <div style="text-align: center; color: var(--text-muted); padding: 20px 0;">Memuat transaksi...</div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN (Gambar 1) -->
+            <div class="dash-right-column">
+              
+              <!-- Card 4: Active Cashiers -->
+              <div class="ui-card kpi-icon-card">
+                <div class="kpi-big-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <div class="kpi-icon-details">
+                  <div class="kpi-main-number" id="dashActiveStaffText">1 Staff</div>
+                  <div class="kpi-sub-text" data-i18n="currently_on_duty">Currently on duty</div>
+                </div>
+              </div>
+
+              <!-- Card 5: Total Products -->
+              <div class="ui-card kpi-icon-card">
+                <div class="kpi-big-icon" style="background: var(--secondary-light); color: var(--secondary);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  </svg>
+                </div>
+                <div class="kpi-icon-details">
+                  <div class="kpi-main-number" id="dashTotalItemsText">0 Items</div>
+                  <div class="kpi-sub-text" data-i18n="across_categories">Across all categories</div>
+                </div>
+              </div>
+
+              <!-- Card 6: Payment Methods Visual Bars (Gambar 1) -->
+              <div class="ui-card">
+                <div class="ui-card-header">
+                  <div class="ui-card-title-group">
+                    <h2 data-i18n="payment_methods_title">Payment Methods</h2>
+                    <p data-i18n="how_customers_pay">How customers pay</p>
+                  </div>
+                  <button type="button" class="btn-card-action-icon">•••</button>
+                </div>
+
+                <div class="payment-bars-grid">
+                  <div class="pay-bar-col">
+                    <span class="pay-bar-val-badge qris" id="dashQrisCountBadge">0</span>
+                    <div class="pay-bar-visual qris" id="dashQrisBarVisual" style="height: 65%;"></div>
+                    <span class="pay-bar-label">QRIS</span>
+                  </div>
+                  <div class="pay-bar-col">
+                    <span class="pay-bar-val-badge cash" id="dashCashCountBadge">0</span>
+                    <div class="pay-bar-visual cash" id="dashCashBarVisual" style="height: 45%;"></div>
+                    <span class="pay-bar-label">Cash</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 7: Low Stock Alert (Gambar 1) -->
+              <div class="ui-card">
+                <div class="ui-card-header">
+                  <div class="ui-card-title-group">
+                    <h2 data-i18n="low_stock_title">Low Stock Alert</h2>
+                    <p data-i18n="restock_soon">Perlu segera restock</p>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+
+                <div class="low-stock-list" id="dashLowStockList">
+                  <div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 10px 0;">Semua stok dalam batas aman.</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             TAB 2: ORDERS / TRANSAKSI
+             ================================================================ -->
+        <section class="tab-pane" id="tabRiwayat">
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="orders_title">Riwayat Transaksi Penjualan</h1>
+              <p data-i18n="orders_subtitle">Daftar seluruh transaksi yang tercatat dari kasir</p>
+            </div>
+            <button type="button" class="btn-secondary" id="btnRefreshTrx">
+              <span>↻</span> <span data-i18n="btn_refresh">Muat Ulang</span>
+            </button>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_trx_id">ID Transaksi</th>
+                  <th data-i18n="col_date_time">Tanggal & Waktu</th>
+                  <th data-i18n="col_cashier">Kasir</th>
+                  <th data-i18n="col_total">Total</th>
+                  <th data-i18n="col_method">Metode</th>
+                  <th data-i18n="col_status">Status</th>
+                </tr>
+              </thead>
+              <tbody id="riwayatTableBody">
+                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Memuat riwayat transaksi...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             TAB 3: KELOLA PRODUK (Katalog & Stok)
+             ================================================================ -->
+        <section class="tab-pane" id="tabProduk">
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="products_title">Katalog &amp; Stok Produk</h1>
+              <p data-i18n="products_subtitle">Kelola menu, harga jual, status aktif di kasir, dan persediaan barang</p>
+            </div>
+            <button type="button" class="btn-primary" id="btnOpenAddProduk">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span data-i18n="btn_add_menu">Add New Menu</span>
+            </button>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_id">ID</th>
+                  <th data-i18n="col_prod_title">Nama Menu / Produk</th>
+                  <th data-i18n="col_category">Kategori</th>
+                  <th data-i18n="col_cost_price">Harga Modal</th>
+                  <th data-i18n="col_sell_price">Harga Jual</th>
+                  <th data-i18n="col_stock">Stok</th>
+                  <th data-i18n="col_barcode">SKU / Barcode</th>
+                  <th style="width: 130px;" data-i18n="col_pos_status">Status Kasir</th>
+                  <th style="width: 130px;" data-i18n="col_action">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="produkTableBody">
+                <tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Memuat daftar produk...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             TAB 4: KATEGORI PRODUK
+             ================================================================ -->
+        <section class="tab-pane" id="tabKategori">
+          <div class="section-title-row">
+            <div>
+              <h1>Kategori Menu &amp; Produk</h1>
+              <p>Kelompokkan menu agar rapi di kasir (Makanan, Minuman, Snack, dsb)</p>
+            </div>
+            <button type="button" class="btn-primary" id="btnOpenAddKategori">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span data-i18n="btn_add_category">Tambah Kategori</span>
+            </button>
+          </div>
+
+          <div class="data-table-wrap" style="max-width: 700px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_cat_id">ID Kategori</th>
+                  <th data-i18n="col_cat_name">Nama Kategori</th>
+                  <th style="width: 120px;" data-i18n="col_action">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="kategoriTableBody">
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Memuat kategori...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             TAB 5: LAPORAN PENJUALAN
+             ================================================================ -->
+        <section class="tab-pane" id="tabLaporan">
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="report_title">Laporan Penjualan &amp; Omset</h1>
+              <p data-i18n="report_subtitle">Analisis transaksi berdasarkan rentang tanggal dan metode pembayaran</p>
+            </div>
+          </div>
+
+          <!-- Filter Form -->
+          <form class="report-filter-bar" id="reportFilterForm">
+            <div class="form-group">
+              <label class="form-label" for="lapTanggalMulai" data-i18n="label_start_date">Dari Tanggal</label>
+              <input type="date" id="lapTanggalMulai" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lapTanggalAkhir" data-i18n="label_end_date">Sampai Tanggal</label>
+              <input type="date" id="lapTanggalAkhir" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lapMetode" data-i18n="label_payment_method">Metode Pembayaran</label>
+              <select id="lapMetode" class="form-input">
+                <option value="SEMUA" data-i18n="opt_all_methods">Semua Metode</option>
+                <option value="Cash" data-i18n="opt_cash">Tunai (Cash)</option>
+                <option value="QRIS" data-i18n="opt_qris">Non-Cash (QRIS)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary" style="height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <span data-i18n="btn_filter_data">Filter Data</span>
+            </button>
+            <button type="button" class="btn-secondary" id="btnExportLaporan" style="height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span data-i18n="btn_export_csv">Export CSV</span>
+            </button>
+          </form>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_trx_id">ID Transaksi</th>
+                  <th data-i18n="col_date_time">Tanggal & Waktu</th>
+                  <th data-i18n="col_cashier">Kasir</th>
+                  <th data-i18n="col_total_rev">Total</th>
+                  <th data-i18n="col_paid">Bayar</th>
+                  <th data-i18n="col_change">Kembalian</th>
+                  <th data-i18n="col_method">Metode</th>
+                </tr>
+              </thead>
+              <tbody id="laporanTableBody">
+                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Tentukan tanggal dan klik "Filter Data".</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             TAB 6: USER MANAGEMENT (KASIR)
+             ================================================================ -->
+        <section class="tab-pane" id="tabKasirStaff">
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="cashiers_title">Kelola Kasir</h1>
+              <p data-i18n="cashiers_subtitle">Tambah atau hapus akun kasir untuk toko ini</p>
+            </div>
+            <button type="button" class="btn-primary" id="btnTambahKasir" style="display:flex; align-items:center; gap:8px; padding: 10px 18px; font-size:13.5px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span data-i18n="btn_add_cashier">Tambah Kasir</span>
+            </button>
+          </div>
+
+          <!-- Form Tambah Kasir (collapsible) -->
+          <div id="formTambahKasirWrap" style="display:none; margin-bottom: 24px;">
+            <div style="background: var(--bg-surface); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 20px 24px;">
+              <div style="font-family: var(--font-heading); font-size: 14px; font-weight: 700; color: var(--text-heading); margin-bottom: 16px;" data-i18n="new_cashier_header">Data Kasir Baru</div>
+              <form id="formKasirBaru" novalidate>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                  <div class="form-group">
+                    <label class="form-label" for="kasirNamaBaru" data-i18n="label_fullname">Nama Lengkap *</label>
+                    <input type="text" id="kasirNamaBaru" class="form-input" placeholder="Contoh: Budi Santoso" data-i18n-placeholder="placeholder_fullname" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="kasirEmailBaru" data-i18n="label_email">Alamat Email *</label>
+                    <input type="email" id="kasirEmailBaru" class="form-input" placeholder="kasir@toko.com" data-i18n-placeholder="placeholder_email" required>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                  <div class="form-group">
+                    <label class="form-label" for="kasirPassBaru" data-i18n="label_password">Kata Sandi *</label>
+                    <input type="password" id="kasirPassBaru" class="form-input" placeholder="Min. 6 karakter" data-i18n-placeholder="placeholder_password" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="label_store_code">Kode Toko</label>
+                    <input type="text" id="kasirKodeToko" class="form-input" readonly style="background: var(--bg-muted); color: var(--text-muted); cursor: not-allowed;">
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                  <button type="button" class="btn-secondary" id="btnBatalTambahKasir" data-i18n="btn_cancel">Batal</button>
+                  <button type="submit" class="btn-primary" id="btnSimpanKasir" data-i18n="btn_save_cashier">Simpan Kasir</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="col_id">ID</th>
+                  <th data-i18n="col_fullname">Nama Lengkap</th>
+                  <th data-i18n="col_email">Email</th>
+                  <th data-i18n="col_store_code">Kode Toko</th>
+                  <th data-i18n="col_role">Role</th>
+                  <th data-i18n="col_status">Status</th>
+                  <th style="width: 80px;" data-i18n="col_action">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="staffTableBody">
+                <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Memuat data kasir...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================
+             TAB 6: ANALYTICS & BUSINESS INSIGHTS (Plus / Minus SWOT)
+             ================================================================ -->
+        <section class="tab-pane" id="tabAnalytics">
+          
+          <!-- Title Row -->
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="analytics_title">Business Analytics &amp; Insights</h1>
+              <p data-i18n="analytics_subtitle">Analisis performa mendalam, kesehatan finansial, dan rekomendasi strategis usaha Anda</p>
+            </div>
+            <button type="button" class="btn-secondary" id="btnRefreshAnalytics">
+              <span>↻</span> <span data-i18n="btn_refresh">Muat Ulang</span>
+            </button>
+          </div>
+
+          <!-- Period Filter Bar -->
+          <div class="analytics-filter-bar">
+            <div class="period-pills-wrap" id="analyticsPeriodPills">
+              <button type="button" class="period-pill-btn active" data-period="all" data-i18n="period_all">Semua Waktu</button>
+              <button type="button" class="period-pill-btn" data-period="month" data-i18n="period_month">30 Hari Terakhir</button>
+              <button type="button" class="period-pill-btn" data-period="7days" data-i18n="period_7days">7 Hari Terakhir</button>
+              <button type="button" class="period-pill-btn" data-period="today" data-i18n="period_today">Hari Ini</button>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted);" id="analyticsDateRangeLabel">Periode: Semua transaksi tercatat</div>
+          </div>
+
+          <!-- 1. Executive Health Score Banner -->
+          <div class="health-score-banner">
+            <div class="health-score-left">
+              <div class="health-score-dial">
+                <span class="health-score-val" id="analyticsHealthScoreVal">88</span>
+                <span class="health-score-max">/ 100</span>
+              </div>
+              <div class="health-meta">
+                <h2 id="analyticsHealthGradeText">Skor Kesehatan Bisnis: Prima</h2>
+                <p id="analyticsHealthStatus">Kondisi operasional dan profitabilitas toko berada pada tren positif.</p>
+              </div>
+            </div>
+            <div class="health-grade-badge" id="analyticsHealthGradeBadge">Grade A • Sangat Sehat</div>
+          </div>
+
+          <!-- 2. Four Strategic KPI Cards -->
+          <div class="kpi-cards-grid">
+            <!-- 1. Gross Profit Margin -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="gross_margin_title">Profit Margin %</span>
+                <div class="kpi-card-icon-wrap green">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="analyticsGrossMargin">0%</div>
+              <div class="kpi-card-trend up" id="analyticsGrossProfitSub">
+                <span>Laba Bersih: Rp 0</span>
+              </div>
+            </div>
+
+            <!-- 2. Average Order Value (AOV) -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="aov_title">Average Order Value</span>
+                <div class="kpi-card-icon-wrap blue">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="analyticsAOV">Rp 0</div>
+              <div class="kpi-card-trend" style="color: var(--text-muted);">
+                <span id="analyticsTotalOrdersSub">0 total transaksi</span>
+              </div>
+            </div>
+
+            <!-- 3. Peak Hour Velocity -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="peak_velocity_title">Jam Puncak (Peak Hour)</span>
+                <div class="kpi-card-icon-wrap orange">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="analyticsPeakHour">12:00</div>
+              <div class="kpi-card-trend" style="color: var(--warning);">
+                <span id="analyticsPeakHourSub">0 order di jam ini</span>
+              </div>
+            </div>
+
+            <!-- 4. Basket Depth -->
+            <div class="kpi-card">
+              <div class="kpi-card-top">
+                <span data-i18n="basket_depth_title">Kedalaman Keranjang</span>
+                <div class="kpi-card-icon-wrap teal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="kpi-card-value" id="analyticsBasketDepth">0.0</div>
+              <div class="kpi-card-trend" style="color: var(--text-muted);">
+                <span id="analyticsTotalItemsSub">item / struk transaksi</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Analisis Plus & Minus Usaha (SWOT Analysis) -->
+          <div class="swot-grid">
+            <!-- PLUS Column -->
+            <div class="swot-col">
+              <div class="swot-col-header plus">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="16"></line>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                <span data-i18n="plus_title">Kekuatan &amp; Keunggulan Usaha (Plus)</span>
+              </div>
+              <div class="swot-cards-list" id="analyticsPlusList">
+                <div style="text-align: center; color: var(--text-muted); padding: 20px;">Memuat kekuatan bisnis...</div>
+              </div>
+            </div>
+
+            <!-- MINUS Column -->
+            <div class="swot-col">
+              <div class="swot-col-header minus">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                <span data-i18n="minus_title">Kekurangan &amp; Titik Kritis Risiko (Minus)</span>
+              </div>
+              <div class="swot-cards-list" id="analyticsMinusList">
+                <div style="text-align: center; color: var(--text-muted); padding: 20px;">Memuat kekurangan bisnis...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. AI Strategic Recommendations -->
+          <div class="ui-card" style="margin-bottom: 20px;">
+            <div class="ui-card-header">
+              <div class="ui-card-title-group">
+                <h2 data-i18n="recommendations_title">Rekomendasi Strategis Usaha</h2>
+                <p data-i18n="recommendations_subtitle">Langkah aksi praktis untuk memaksimalkan omset dan mencegah kebocoran modal</p>
+              </div>
+            </div>
+            <div id="analyticsRecList" style="padding: 18px 22px;">
+              <div style="text-align: center; color: var(--text-muted); padding: 10px;">Memuat rekomendasi strategis...</div>
+            </div>
+          </div>
+
+          <!-- 5. 24-Hour Sales Distribution Heatmap -->
+          <div class="ui-card" style="margin-bottom: 20px;">
+            <div class="ui-card-header">
+              <div class="ui-card-title-group">
+                <h2 data-i18n="hourly_chart_title">Distribusi Penjualan 24 Jam</h2>
+                <p data-i18n="hourly_chart_subtitle">Kerapatan transaksi berdasarkan jam operasional gerai</p>
+              </div>
+            </div>
+            <div style="padding: 10px 22px 22px 22px;">
+              <div class="hourly-bars-grid" id="analyticsHourlyBars">
+                <!-- 24 hourly bars -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Product Performance Matrix Table -->
+          <div class="ui-card">
+            <div class="ui-card-header">
+              <div class="ui-card-title-group">
+                <h2 data-i18n="product_matrix_title">Matriks Kinerja Produk (BCG Matrix)</h2>
+                <p data-i18n="product_matrix_subtitle">Klasifikasi produk berdasarkan volume penjualan, kontribusi laba, dan status stok</p>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="col_prod_name">Nama Produk</th>
+                    <th data-i18n="col_prod_cat">Kategori</th>
+                    <th data-i18n="col_prod_sold">Terjual (Qty)</th>
+                    <th data-i18n="col_prod_rev">Total Omset</th>
+                    <th data-i18n="col_prod_margin">Margin %</th>
+                    <th data-i18n="col_prod_stock">Sisa Stok</th>
+                    <th data-i18n="col_prod_matrix">Status Matriks</th>
+                  </tr>
+                </thead>
+                <tbody id="analyticsMatrixBody">
+                  <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Memuat matriks produk...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             TAB 7: SETTINGS & PENGATURAN TOKO
+             ================================================================ -->
+        <section class="tab-pane" id="tabPengaturan">
+          
+          <!-- Title Row -->
+          <div class="section-title-row">
+            <div>
+              <h1 data-i18n="settings_title">Pengaturan Toko &amp; Tampilan</h1>
+              <p data-i18n="settings_subtitle">Kustomisasi identitas toko, tema warna tampilan dashboard, dan preferensi bahasa</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            
+            <!-- Card 1: Identitas & Nama Tampilan Toko -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                  </svg>
+                </div>
+                <div class="settings-card-title">
+                  <h3 data-i18n="store_profile_title">Identitas &amp; Nama Tampilan</h3>
+                  <p data-i18n="store_profile_desc">Atur nama toko dan nama admin yang tampil di seluruh sistem</p>
+                </div>
+              </div>
+
+              <form id="formPengaturanProfil">
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="setNamaToko" data-i18n="label_store_name">Nama Toko / Outlet *</label>
+                  <input type="text" id="setNamaToko" class="form-input" placeholder="Contoh: Coffe Shop" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="setNamaAdmin" data-i18n="label_admin_name">Nama Admin / Tampilan Akun *</label>
+                  <input type="text" id="setNamaAdmin" class="form-input" placeholder="Contoh: Abryan Yoga Pratama" required>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                  <label class="form-label" data-i18n="label_outlet_code">Kode Toko (Unik)</label>
+                  <input type="text" id="setKodeTokoDisplay" class="form-input" readonly style="background: var(--bg-muted); color: var(--text-muted); cursor: not-allowed;">
+                </div>
+
+                <button type="submit" class="btn-primary" id="btnSaveStoreSettings" style="width: 100%; justify-content: center;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                  </svg>
+                  <span data-i18n="btn_save_settings">Simpan Perubahan Tampilan</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- Card 2: Pilihan Bahasa (Language Selection) -->
+            <div class="settings-card" style="justify-content: space-between;">
+              <div>
+                <div class="settings-card-header">
+                  <div class="settings-card-icon" style="background: var(--secondary-light); color: var(--secondary);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="2" y1="12" x2="22" y2="12"></line>
+                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                  </div>
+                  <div class="settings-card-title">
+                    <h3 data-i18n="lang_settings_title">Pilihan Bahasa (Language)</h3>
+                    <p data-i18n="lang_settings_desc">Pilih bahasa pengantar antarmuka dashboard</p>
+                  </div>
+                </div>
+
+                <div class="lang-switcher-grid" id="langOptionsGrid">
+                  <!-- ID -->
+                  <div class="lang-card-pill active" data-lang="id">
+                    <span class="lang-flag">🇮🇩</span>
+                    <div class="lang-info">
+                      <div class="lang-title">Bahasa Indonesia</div>
+                      <div class="lang-sub">Bahasa Nasional (ID)</div>
+                    </div>
+                    <div class="lang-check-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- EN -->
+                  <div class="lang-card-pill" data-lang="en">
+                    <span class="lang-flag">🇬🇧</span>
+                    <div class="lang-info">
+                      <div class="lang-title">English</div>
+                      <div class="lang-sub">International (EN)</div>
+                    </div>
+                    <div class="lang-check-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: auto; padding: 14px 16px; background: var(--bg-surface-subtle); border-radius: var(--radius); border: 1px dashed var(--border);">
+                <div class="sync-note-title" style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-heading); margin-bottom: 4px;" data-i18n="lang_note_title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>Sinkronisasi Otomatis</span>
+                </div>
+                <div style="font-size: 11.5px; color: var(--text-muted); line-height: 1.45;" data-i18n="lang_note_desc">Seluruh menu navigasi, metrik analitik, grafik, tabel riwayat, dan laporan akan langsung berubah saat bahasa dipilih.</div>
+              </div>
+            </div>
+
+            <!-- Card 3: Tema Warna Tampilan (Theme Customizer) -->
+            <div class="settings-card full-width">
+              <div class="settings-card-header">
+                <div class="settings-card-icon" style="background: var(--chart-orange-light); color: var(--chart-orange);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2a10 10 0 0 0 0 20"></path>
+                  </svg>
+                </div>
+                <div class="settings-card-title">
+                  <h3 data-i18n="theme_settings_title">Warna Tema Tampilan (Theme Customizer)</h3>
+                  <p data-i18n="theme_settings_desc">Sesuaikan palet warna visual dashboard sesuai identitas brand usaha Anda</p>
+                </div>
+              </div>
+
+              <div class="theme-swatches-grid" id="themeSwatchesContainer">
+                <!-- Theme 1: Pine Forest -->
+                <div class="theme-swatch-card active" data-theme="pine">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #2B5D4F;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Pine Forest</div>
+                      <div class="theme-sub-label">Klasik Hijau</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Theme 2: Ocean Sapphire -->
+                <div class="theme-swatch-card" data-theme="ocean">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #1E40AF;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Ocean Sapphire</div>
+                      <div class="theme-sub-label">Royal Blue</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Theme 3: Warm Coffee -->
+                <div class="theme-swatch-card" data-theme="coffee">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #78350F;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Warm Coffee</div>
+                      <div class="theme-sub-label">Espresso Mocha</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Theme 4: Royal Amethyst -->
+                <div class="theme-swatch-card" data-theme="amethyst">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #581C87;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Royal Amethyst</div>
+                      <div class="theme-sub-label">Luxury Purple</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Theme 5: Sunset Crimson -->
+                <div class="theme-swatch-card" data-theme="crimson">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #991B1B;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Sunset Crimson</div>
+                      <div class="theme-sub-label">Ruby Crimson</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Theme 6: Midnight Studio -->
+                <div class="theme-swatch-card" data-theme="dark">
+                  <div class="theme-card-body">
+                    <div class="theme-swatch-dot" style="background: #0F172A; border: 1.5px solid #334155;"></div>
+                    <div class="theme-card-text">
+                      <div class="theme-name-label">Midnight Studio</div>
+                      <div class="theme-sub-label">Dark Mode</div>
+                    </div>
+                  </div>
+                  <div class="theme-check-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+    </div>
+
+  </div>
+
+  <!-- ====================================================================
+       MODAL 1: ADD / EDIT PRODUCT (Gambar 2 - Mokopi Seller Reference)
+       ==================================================================== -->
+  <div class="modal-backdrop" id="modalProduk">
+    <div class="modal-container-lg">
+      
+      <!-- Header (Gambar 2) -->
+      <div class="modal-header-clean">
+        <div>
+          <h2 id="modalProdukTitle">Add New Menu</h2>
+          <p id="modalProdukSub">Add new menu to your Cafe / Store</p>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseModalProduk">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- 2-Column Form Body (Gambar 2) -->
+      <form id="formProduk" class="modal-scroll-body">
+        <input type="hidden" id="prodId">
+
+        <div class="form-two-cols">
+          
+          <!-- LEFT COLUMN -->
+          <div class="form-col-section">
+            
+            <!-- Card 1: Name & Description (Gambar 2) -->
+            <div class="form-card-box">
+              <div class="form-card-box-title" data-i18n="card_name_desc">Name &amp; Description</div>
+              
+              <div class="form-group">
+                <label class="form-label" for="prodNama" data-i18n="label_menu_name">Menu Name *</label>
+                <input type="text" id="prodNama" class="form-input" placeholder="Contoh: Macha Latte" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodDesc" data-i18n="label_menu_desc">Menu Description</label>
+                <textarea id="prodDesc" class="form-input" rows="4" style="height: auto; padding: 10px 12px; resize: vertical;" placeholder="Deskripsi rasa, bahan racikan, atau catatan penyajian menu..."></textarea>
+              </div>
+            </div>
+
+            <!-- Card 2: Menu Image (Gambar 2 & Upload Lokal) -->
+            <div class="form-card-box">
+              <div class="form-card-box-title" data-i18n="card_menu_image">Menu Image</div>
+              
+              <div class="form-group">
+                <label class="form-label" for="prodGambar" data-i18n="label_prod_img_url">URL Gambar / Foto Produk</label>
+                <input type="text" id="prodGambar" class="form-input" placeholder="https://images.unsplash.com/... atau upload di bawah">
+              </div>
+
+              <!-- Input File Tersembunyi untuk Upload Lokal -->
+              <input type="file" id="prodFileInput" accept="image/*" style="display: none;">
+
+              <div class="image-drop-area" id="imageDropBox" title="Klik untuk upload foto dari penyimpanan perangkat (lokal)">
+                <img src="" id="imgPreviewThumb" class="image-preview-thumbnail" alt="Preview">
+                <div id="imageDropPrompt" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <div style="font-size: 12.5px; font-weight: 600; color: var(--primary);" data-i18n="upload_local_photo">Upload Foto dari Perangkat (Lokal)</div>
+                  <div style="font-size: 11px; color: var(--text-muted);" data-i18n="upload_photo_hint">Klik di sini untuk memilih file gambar (PNG, JPG, WebP)</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="form-col-section">
+            
+            <!-- Card 3: Category (Gambar 2) -->
+            <div class="form-card-box">
+              <div class="form-card-box-title" data-i18n="card_category">Category</div>
+              
+              <div class="form-group">
+                <label class="form-label" for="prodKategoriId" data-i18n="label_menu_category">Menu Category *</label>
+                <select id="prodKategoriId" class="form-input" required>
+                  <option value="">-- Pilih Kategori --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prodSubCategory" data-i18n="label_menu_subcategory">Menu Sub-Category / Tag</label>
+                <input type="text" id="prodSubCategory" class="form-input" placeholder="Contoh: Coffee / Signature / Ice">
+              </div>
+            </div>
+
+            <!-- Card 4: Manage Stock (Gambar 2) -->
+            <div class="form-card-box">
+              <div class="form-card-box-title" data-i18n="card_manage_stock">Manage Stock</div>
+              
+              <div class="form-group">
+                <label class="form-label" for="prodBarcode" data-i18n="label_sku_barcode">Stock Keeping Item (SKU / Barcode)</label>
+                <input type="text" id="prodBarcode" class="form-input" placeholder="Contoh: CFFE-MM-01-A9">
+              </div>
+
+              <div class="form-row-2cols">
+                <div class="form-group">
+                  <label class="form-label" for="prodStok" data-i18n="label_menu_stock">Menu Stock *</label>
+                  <input type="number" id="prodStok" class="form-input" placeholder="50" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prodMinStok" data-i18n="label_min_stock_alert">Minimum Stock Alert</label>
+                  <input type="number" id="prodMinStok" class="form-input" placeholder="5" min="0" value="5">
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5: Menu Pricing (Gambar 2) -->
+            <div class="form-card-box">
+              <div class="form-card-box-title" data-i18n="card_menu_pricing">Menu Pricing</div>
+              
+              <div class="form-row-2cols">
+                <div class="form-group">
+                  <label class="form-label" for="prodHargaBeli" data-i18n="label_cost_price">Cost Price (Harga Modal)</label>
+                  <input type="number" id="prodHargaBeli" class="form-input" placeholder="12000" min="0" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="prodHargaJual" data-i18n="label_sell_price">Sell Price (Harga Jual) *</label>
+                  <input type="number" id="prodHargaJual" class="form-input" placeholder="20000" min="0" required>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="modal-footer-actions">
+          <button type="button" class="btn-secondary" id="btnCancelModalProduk" data-i18n="btn_cancel">Batal</button>
+          <button type="submit" class="btn-primary" id="btnSaveProduk">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span data-i18n="btn_save_menu">Simpan Menu</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL 2: ADD KATEGORI -->
+  <div class="modal-backdrop" id="modalKategori">
+    <div class="modal-container-sm">
+      <div class="modal-header-clean">
+        <h2 data-i18n="modal_cat_title_add">Tambah Kategori Baru</h2>
+        <button type="button" class="btn-modal-close" id="btnCloseModalKategori">✕</button>
+      </div>
+      <form id="formKategori" style="padding: 20px;">
+        <input type="hidden" id="katId">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label class="form-label" for="katNama" data-i18n="label_cat_name">Nama Kategori *</label>
+          <input type="text" id="katNama" class="form-input" placeholder="Contoh: Makanan Berat" data-i18n-placeholder="placeholder_cat_name" required>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn-secondary" id="btnCancelModalKategori" data-i18n="btn_cancel">Batal</button>
+          <button type="submit" class="btn-primary" data-i18n="btn_save_category">Simpan Kategori</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: CUSTOM CONFIRMATION DIALOG (Replaces browser confirm) -->
+  <div class="modal-backdrop" id="modalConfirmDialog">
+    <div class="modal-container-sm">
+      <div class="confirm-modal-box">
+        <div class="confirm-icon-pill danger" id="confirmIconWrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </div>
+        <h3 class="confirm-title" id="confirmDialogTitle">Hapus Menu Produk?</h3>
+        <p class="confirm-desc" id="confirmDialogDesc">Apakah Anda yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="confirm-warning-box" id="confirmDialogWarning" style="display: none;">
+          <svg class="warn-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B23A2E" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span id="confirmDialogWarningText">Produk ini memiliki riwayat transaksi penjualan. Disarankan untuk menonaktifkan status di kasir saja agar laporan penjualan lama tidak terpengaruh.</span>
+        </div>
+        <div class="confirm-actions-row">
+          <button type="button" class="btn-secondary" id="btnCancelConfirm" style="flex: 1;" data-i18n="btn_cancel">Batal</button>
+          <button type="button" class="btn-danger-solid" id="btnAcceptConfirm" style="flex: 1;">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: EDIT KASIR & RESET KATA SANDI -->
+  <div class="modal-backdrop" id="modalEditKasir">
+    <div class="modal-container-sm">
+      <div class="modal-header-clean">
+        <div>
+          <h2 data-i18n="modal_edit_kasir_title">Edit Akun Kasir</h2>
+          <p data-i18n="modal_edit_kasir_sub">Perbarui profil kasir atau atur kata sandi baru</p>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnCloseModalEditKasir">✕</button>
+      </div>
+      <form id="formEditKasir" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+        <input type="hidden" id="editKasirId">
+
+        <div class="form-group">
+          <label class="form-label" for="editKasirNama">Nama Lengkap *</label>
+          <input type="text" id="editKasirNama" class="form-input" placeholder="Nama lengkap kasir" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editKasirEmail">Alamat Email *</label>
+          <input type="email" id="editKasirEmail" class="form-input" placeholder="kasir@toko.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editKasirPass" data-i18n="label_new_password_optional">Kata Sandi Baru (Opsional)</label>
+          <input type="password" id="editKasirPass" class="form-input" placeholder="Kosongkan jika tidak ingin mengganti sandi" data-i18n-placeholder="placeholder_new_password">
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">
+            <span data-i18n="password_encryption_hint">Kata sandi tersimpan aman menggunakan enkripsi SHA-256. Isi minimal 6 karakter hanya jika ingin mereset kata sandi kasir.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kode Toko</label>
+          <input type="text" id="editKasirKodeToko" class="form-input" readonly style="background: var(--bg-muted); color: var(--text-muted); cursor: not-allowed;">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px;">
+          <button type="button" class="btn-secondary" id="btnCancelModalEditKasir" data-i18n="btn_cancel">Batal</button>
+          <button type="submit" class="btn-primary" id="btnSaveEditKasir" data-i18n="btn_save_changes">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast & Loading Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div id="loadingText">Memproses data...</div>
+  </div>
+
+  <!-- ====================================================================
+       FRONTEND LOGIC & SCRIPT
+       ==================================================================== -->
+  
+</body>
+</html>
