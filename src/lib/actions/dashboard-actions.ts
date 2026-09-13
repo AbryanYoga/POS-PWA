@@ -194,25 +194,45 @@ export async function getDashboardData(): Promise<{
       });
     }
 
-    // 9. Top Selling Categories (Wajib filter per kodeToko)
-    const topCategories: TopCategoryItem[] = [];
-    const allCategories = await db.query.categories.findMany({
-      where: eq(categories.kodeToko, kodeToko),
-      orderBy: [categories.urutan],
-    });
+    // 9. Top Selling Categories (Wajib filter per kodeToko - snapshot kategori riil saat transaksi)
+    const categorySalesMap = new Map<string, { name: string; count: number }>();
 
-    if (allCategories.length > 0 && allTransactions.length > 0) {
-      // Hitung dari database jika ada transaksi
-      allCategories.forEach((cat) => {
-        const catProds = allProducts.filter((p) => p.categoryId === cat.id);
-        const count = catProds.reduce((sum, p) => sum + p.stok, 0);
-        topCategories.push({
-          id: cat.id,
-          name: cat.nama,
-          count,
-        });
+    if (allTransactions.length > 0) {
+      const soldItems = await db
+        .select({
+          qty: transactionItems.qty,
+          kategoriNama: transactionItems.kategoriNama,
+        })
+        .from(transactionItems)
+        .innerJoin(transactions, eq(transactionItems.transactionId, transactions.id))
+        .where(
+          and(
+            eq(transactions.kodeToko, kodeToko),
+            eq(transactions.status, "COMPLETED")
+          )
+        );
+
+      soldItems.forEach((it) => {
+        const catName = it.kategoriNama?.trim() || "Tanpa Kategori";
+        const exist = categorySalesMap.get(catName);
+        if (exist) {
+          exist.count += it.qty || 0;
+        } else {
+          categorySalesMap.set(catName, {
+            name: catName,
+            count: it.qty || 0,
+          });
+        }
       });
     }
+
+    const topCategories: TopCategoryItem[] = Array.from(categorySalesMap.entries())
+      .map(([name, val]) => ({
+        id: name,
+        name: val.name,
+        count: val.count,
+      }))
+      .sort((a, b) => b.count - a.count);
 
     // 10. Recent Transactions (5 Latest, terfilter per kodeToko)
     const recentTransactions: RecentTransactionItem[] = allTransactions

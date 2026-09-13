@@ -1,28 +1,52 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PwaRegistrar } from "@/components/pwa/PwaRegistrar";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
+
+// CSS Terpusat (Urutan: globals.css -> CSS halaman)
 import "./globals.css";
+import "./login/login.css";
+import "./admin/admin.css";
+import "./cashier/cashier.css";
+import "./register/register.css";
 
-const archivo = Archivo({
-  subsets: ["latin"],
+const archivo = localFont({
+  src: "../fonts/archivo.woff2",
   variable: "--font-heading",
-  weight: ["600", "700", "800"],
   display: "swap",
 });
 
-const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
+const ibmPlexSans = localFont({
+  src: "../fonts/ibm-plex-sans.woff2",
   variable: "--font-body",
-  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
+const ibmPlexMono = localFont({
+  src: [
+    {
+      path: "../fonts/ibm-plex-mono-400.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/ibm-plex-mono-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../fonts/ibm-plex-mono-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../fonts/ibm-plex-mono-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-mono",
-  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 

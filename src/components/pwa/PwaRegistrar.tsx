@@ -15,17 +15,45 @@ export function PwaRegistrar() {
   const [showIosPrompt, setShowIosPrompt] = useState(false);
 
   useEffect(() => {
-    // 1. Daftarkan Service Worker
+    // 1. Daftarkan Service Worker & tangani siklus update
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/sw.js")
           .then((registration) => {
             console.log("[PWA] Service Worker terdaftar:", registration.scope);
+
+            // Cek update saat tab/halaman dibuka
+            registration.addEventListener("updatefound", () => {
+              const installingWorker = registration.installing;
+              if (installingWorker) {
+                installingWorker.addEventListener("statechange", () => {
+                  if (
+                    installingWorker.state === "installed" &&
+                    navigator.serviceWorker.controller
+                  ) {
+                    showToast(
+                      "Versi baru POS telah diperbarui di latar belakang.",
+                      "info"
+                    );
+                  }
+                });
+              }
+            });
           })
           .catch((err) => {
             console.warn("[PWA] Registrasi Service Worker gagal:", err);
           });
+      });
+
+      // Reload tab jika ada controllerchange (ketika SW baru memanggil clients.claim())
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!refreshing) {
+          refreshing = true;
+          // SW baru sudah aktif mengambil alih kendali
+          console.log("[PWA] Service worker baru telah mengambil alih kendali.");
+        }
       });
     }
 
@@ -68,7 +96,7 @@ export function PwaRegistrar() {
     };
 
     const handleOffline = () => {
-      showToast("Anda sedang offline. Data transaksi memerlukan internet.", "error");
+      showToast("Anda sedang offline. Transaksi kasir membutuhkan koneksi.", "error");
     };
 
     window.addEventListener("online", handleOnline);

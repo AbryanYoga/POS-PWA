@@ -278,7 +278,7 @@ export function StaffManagementTab({ lang }: Props) {
   return (
     <div className="staff-tab-container">
       {/* ── Header ─────────────────────────────────────────────── */}
-      <div className="tab-section-header">
+      <div className="tab-section-header admin-card-anim anim-delay-0">
         <div>
           <h2 className="tab-section-title">
             {isEn ? "User Management" : "Manajemen Staff & Kasir"}
@@ -304,7 +304,7 @@ export function StaffManagementTab({ lang }: Props) {
       </div>
 
       {/* ── Search ─────────────────────────────────────────────── */}
-      <div className="staff-search-bar">
+      <div className="staff-search-bar admin-card-anim anim-delay-1">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -325,7 +325,7 @@ export function StaffManagementTab({ lang }: Props) {
       </div>
 
       {/* ── Stats Row ──────────────────────────────────────────── */}
-      <div className="staff-stats-row">
+      <div className="staff-stats-row admin-card-anim anim-delay-2">
         <div className="staff-stat-pill">
           <span className="staff-stat-num">{staff.length}</span>
           <span className="staff-stat-label">{isEn ? "Total" : "Total"}</span>
@@ -345,7 +345,7 @@ export function StaffManagementTab({ lang }: Props) {
       </div>
 
       {/* ── Table ──────────────────────────────────────────────── */}
-      <div className="staff-table-card">
+      <div className="staff-table-card admin-card-anim anim-delay-3">
         {loading ? (
           <div className="staff-loading-state">
             <div className="staff-spinner" />

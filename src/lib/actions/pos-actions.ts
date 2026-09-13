@@ -276,6 +276,7 @@ export async function processCheckoutAction(
       let grandTotal = 0;
       const snapshotItems: {
         product: typeof products.$inferSelect;
+        kategoriNama: string;
         qty: number;
         subtotal: number;
         catatan?: string;
@@ -327,8 +328,22 @@ export async function processCheckoutAction(
         const subtotal = hargaSatuan * item.qty;
         grandTotal += subtotal;
 
+        // Snapshot Kategori Nama Produk TERKINI
+        let kategoriNama = "Tanpa Kategori";
+        if (lockedProduct.categoryId) {
+          const [cat] = await tx
+            .select({ nama: categories.nama })
+            .from(categories)
+            .where(eq(categories.id, lockedProduct.categoryId))
+            .limit(1);
+          if (cat?.nama) {
+            kategoriNama = cat.nama;
+          }
+        }
+
         snapshotItems.push({
           product: lockedProduct,
+          kategoriNama,
           qty: item.qty,
           subtotal,
           catatan: item.catatan,
@@ -336,9 +351,13 @@ export async function processCheckoutAction(
       }
 
       // Validasi Nominal Bayar untuk Tunai
-      const metode = (payload.metodePembayaran || "CASH").toUpperCase();
-      const bayarNominal = metode === "CASH" ? Number(payload.bayar) : grandTotal;
-      if (metode === "CASH" && bayarNominal < grandTotal) {
+      const rawMetode = payload.metodePembayaran?.trim() || "CASH";
+      const isCash =
+        rawMetode.toUpperCase() === "CASH" ||
+        rawMetode.toLowerCase() === "tunai";
+      const metode = rawMetode;
+      const bayarNominal = isCash ? Number(payload.bayar) : grandTotal;
+      if (isCash && bayarNominal < grandTotal) {
         throw new Error(
           `Nominal pembayaran kurang! Total: Rp ${grandTotal.toLocaleString(
             "id-ID"
@@ -346,7 +365,7 @@ export async function processCheckoutAction(
         );
       }
       const kembalianNominal =
-        metode === "CASH" ? Math.max(0, bayarNominal - grandTotal) : 0;
+        isCash ? Math.max(0, bayarNominal - grandTotal) : 0;
 
       // 4. Insert Header Transaksi dengan Idempotency Key
       const [insertedTrx] = await tx
@@ -367,11 +386,12 @@ export async function processCheckoutAction(
 
       // 4. Insert Detail Items, Kurangi Stok, dan Catat Stock Movement
       for (const snap of snapshotItems) {
-        // Insert item detail
+        // Insert item detail (dengan snapshot kategori_nama historis)
         await tx.insert(transactionItems).values({
           transactionId: insertedTrx.id,
           productId: snap.product.id,
           namaProduk: snap.product.nama,
+          kategoriNama: snap.kategoriNama,
           hargaBeli: snap.product.hargaBeli,
           hargaJual: snap.product.hargaJual,
           qty: snap.qty,

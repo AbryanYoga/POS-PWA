@@ -3,6 +3,7 @@
 import React from "react";
 import { logoutAction } from "@/lib/actions/auth-actions";
 import type { Language } from "@/lib/translations";
+import { TAB_KEYS } from "@/lib/tab-keys";
 
 interface AdminSidebarProps {
   collapsed: boolean;
@@ -87,8 +88,8 @@ export function AdminSidebar({
           <div className="menu-group-label">{isEn ? "Main Menu" : "Main Menu"}</div>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabDashboard" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabDashboard")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.DASHBOARD ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.DASHBOARD)}
             data-tooltip="Overview"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -101,8 +102,8 @@ export function AdminSidebar({
           </button>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabRiwayat" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabRiwayat")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.RIWAYAT ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.RIWAYAT)}
             data-tooltip={isEn ? "Orders / Transactions" : "Orders / Transaksi"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -114,8 +115,8 @@ export function AdminSidebar({
           </button>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabKategori" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabKategori")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.KATEGORI ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.KATEGORI)}
             data-tooltip={isEn ? "Categories" : "Kategori Produk"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -133,8 +134,8 @@ export function AdminSidebar({
           <div className="menu-group-label">{isEn ? "Inventory" : "Inventory"}</div>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabProduk" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabProduk")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.PRODUK ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.PRODUK)}
             data-tooltip={isEn ? "Products" : "Katalog Produk"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -151,8 +152,8 @@ export function AdminSidebar({
           <div className="menu-group-label">{isEn ? "Report & Analytics" : "Report & Analytics"}</div>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabLaporan" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabLaporan")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.LAPORAN ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.LAPORAN)}
             data-tooltip={isEn ? "Reporting" : "Laporan Penjualan"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -164,8 +165,8 @@ export function AdminSidebar({
           </button>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabAnalytics" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabAnalytics")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.ANALYTICS ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.ANALYTICS)}
             data-tooltip={isEn ? "Analytics & Insights" : "Analytics & Insights"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -181,8 +182,8 @@ export function AdminSidebar({
           <div className="menu-group-label">{isEn ? "Settings" : "Settings"}</div>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabKasirStaff" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabKasirStaff")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.KASIR_STAFF ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.KASIR_STAFF)}
             data-tooltip={isEn ? "User Management" : "User Management"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -193,8 +194,8 @@ export function AdminSidebar({
           </button>
           <button
             type="button"
-            className={`nav-item-btn ${activeTab === "tabPengaturan" ? "active" : ""}`}
-            onClick={() => onSelectTab("tabPengaturan")}
+            className={`nav-item-btn ${activeTab === TAB_KEYS.PENGATURAN ? "active" : ""}`}
+            onClick={() => onSelectTab(TAB_KEYS.PENGATURAN)}
             data-tooltip={isEn ? "Settings" : "Pengaturan"}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">

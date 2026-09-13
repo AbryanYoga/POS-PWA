@@ -174,6 +174,7 @@ export const transactionItems = pgTable(
       onDelete: "set null",
     }),
     namaProduk: varchar("nama_produk", { length: 150 }).notNull(),
+    kategoriNama: varchar("kategori_nama", { length: 100 }),
     hargaBeli: numeric("harga_beli", { precision: 12, scale: 2 }).default("0").notNull(),
     hargaJual: numeric("harga_jual", { precision: 12, scale: 2 }).notNull(),
     qty: integer("qty").notNull(),
@@ -182,6 +183,7 @@ export const transactionItems = pgTable(
   (table) => [
     index("idx_trx_items_transaction").on(table.transactionId),
     index("idx_trx_items_product").on(table.productId),
+    index("idx_trx_items_kategori").on(table.kategoriNama),
   ]
 );
 
@@ -257,6 +259,7 @@ export const auditLogs = pgTable(
   (table) => [
     index("idx_audit_logs_kode_toko").on(table.kodeToko),
     index("idx_audit_logs_created_at").on(table.createdAt),
+    index("idx_audit_logs_rate_limit").on(table.kodeToko, table.aksi, table.createdAt),
   ]
 );
 

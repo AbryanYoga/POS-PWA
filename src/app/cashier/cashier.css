@@ -732,6 +732,167 @@
   background: var(--primary-light);
 }
 
+/* Sub-channels Grid for Non-Cash */
+.payment-channels-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-top: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.payment-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.payment-channel-btn {
+  padding: 8px 6px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  min-height: 58px;
+}
+
+.payment-channel-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.payment-channel-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.payment-channel-logo-wrap {
+  width: 44px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.payment-channel-logo-wrap img {
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.payment-channel-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-heading);
+  text-align: center;
+  line-height: 1.1;
+}
+
+/* QRIS & VA Box Styling */
+.noncash-details-box {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.qris-qr-wrapper {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  display: inline-block;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.simulasi-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #DC2626;
+  color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.35);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.simulasi-badge-va {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  color: #92400E;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.qris-qr-image {
+  display: block;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+}
+
+.va-details-card {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  text-align: left;
+  margin: 8px 0;
+}
+
+.va-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+}
+
+.va-row:last-child {
+  margin-bottom: 0;
+}
+
+.va-number-badge {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+
 .quick-money-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

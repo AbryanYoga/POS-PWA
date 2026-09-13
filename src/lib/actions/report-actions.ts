@@ -150,7 +150,7 @@ export async function getSalesReportDataAction(
 
     const productSalesMap = new Map<
       string,
-      { nama: string; qty: number; omset: number; cogs: number; categoryId?: string }
+      { nama: string; qty: number; omset: number; cogs: number; categoryName: string }
     >();
 
     periodTrx.forEach((tx) => {
@@ -170,6 +170,7 @@ export async function getSalesReportDataAction(
         const itQty = it.qty || 0;
         const itSubtotal = Number(it.subtotal || 0);
         const itHpp = Number(it.hargaBeli || 0) * itQty;
+        const itCatName = it.kategoriNama?.trim() || "Tanpa Kategori";
 
         totalUnitsSold += itQty;
         totalCogs += itHpp;
@@ -177,6 +178,7 @@ export async function getSalesReportDataAction(
         const prodId = it.productId || it.namaProduk;
         const exist = productSalesMap.get(prodId) || {
           nama: it.namaProduk,
+          categoryName: itCatName,
           qty: 0,
           omset: 0,
           cogs: 0,
@@ -184,6 +186,9 @@ export async function getSalesReportDataAction(
         exist.qty += itQty;
         exist.omset += itSubtotal;
         exist.cogs += itHpp;
+        if (itCatName && itCatName !== "Tanpa Kategori") {
+          exist.categoryName = itCatName;
+        }
         productSalesMap.set(prodId, exist);
       });
     });
@@ -200,7 +205,7 @@ export async function getSalesReportDataAction(
         ? Math.round(totalGrossRevenue / totalTransactionsCount)
         : 0;
 
-    // 4. Top Best Sellers
+    // 4. Top Best Sellers (Snapshot kategori_nama)
     const allProducts = await db.query.products.findMany({
       where: eq(products.kodeToko, kodeToko),
       with: { category: true },
@@ -212,7 +217,7 @@ export async function getSalesReportDataAction(
         return {
           id: prodId,
           nama: val.nama,
-          categoryName: prodMatch?.category?.nama || "Umum",
+          categoryName: val.categoryName || prodMatch?.category?.nama || "Umum",
           qtySold: val.qty,
           totalOmset: val.omset,
           totalProfit: val.omset - val.cogs,
@@ -221,34 +226,28 @@ export async function getSalesReportDataAction(
       .sort((a, b) => b.qtySold - a.qtySold)
       .slice(0, 10);
 
-    // 5. Category Sales Breakdown
-    const allCategories = await db.query.categories.findMany({
-      where: eq(categories.kodeToko, kodeToko),
-      orderBy: [categories.urutan],
-    });
-
-    const categorySales: CategorySalesItem[] = allCategories.map((cat) => {
-      const catProductIds = new Set(
-        allProducts.filter((p) => p.categoryId === cat.id).map((p) => p.id)
-      );
-
-      let catQty = 0;
-      let catOmset = 0;
-
-      productSalesMap.forEach((val, pId) => {
-        if (catProductIds.has(pId)) {
-          catQty += val.qty;
-          catOmset += val.omset;
-        }
+    // 5. Category Sales Breakdown (Snapshot kategori_nama historis)
+    const categorySnapshotMap = new Map<string, { qty: number; omset: number }>();
+    periodTrx.forEach((tx) => {
+      tx.items?.forEach((it) => {
+        const catName = it.kategoriNama?.trim() || "Tanpa Kategori";
+        const itQty = it.qty || 0;
+        const itSubtotal = Number(it.subtotal || 0);
+        const existing = categorySnapshotMap.get(catName) || { qty: 0, omset: 0 };
+        existing.qty += itQty;
+        existing.omset += itSubtotal;
+        categorySnapshotMap.set(catName, existing);
       });
-
-      return {
-        id: cat.id,
-        nama: cat.nama,
-        qtySold: catQty,
-        totalOmset: catOmset,
-      };
     });
+
+    const categorySales: CategorySalesItem[] = Array.from(categorySnapshotMap.entries())
+      .map(([nama, val]) => ({
+        id: nama,
+        nama,
+        qtySold: val.qty,
+        totalOmset: val.omset,
+      }))
+      .sort((a, b) => b.totalOmset - a.totalOmset);
 
     // 6. Format Expenses
     const expensesList: ExpenseItem[] = periodExpenses.map((ex) => ({

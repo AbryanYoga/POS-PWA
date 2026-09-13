@@ -7,7 +7,7 @@
  */
 
 import { db } from "@/db";
-import { transactions, transactionItems, products, expenses } from "@/db/schema";
+import { transactions, transactionItems, products, categories, expenses } from "@/db/schema";
 import { eq, and, gte, lte, desc, sum, count, avg } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 import { getWib30DaysRange, getWib7DaysRange, getWibDayRange } from "@/lib/utils";
@@ -175,7 +175,7 @@ export async function computeAnalytics(kodeToko: string): Promise<AnalyticsData>
         )
       ),
 
-    // Items transaksi 30 hari (untuk COGS & kategori breakdown)
+    // Items transaksi 30 hari (untuk COGS & kategori breakdown snapshot)
     db
       .select({
         transactionId: transactionItems.transactionId,
@@ -185,10 +185,9 @@ export async function computeAnalytics(kodeToko: string): Promise<AnalyticsData>
         hargaBeli: transactionItems.hargaBeli,
         qty: transactionItems.qty,
         subtotal: transactionItems.subtotal,
-        categoryId: products.categoryId,
+        kategoriNama: transactionItems.kategoriNama,
       })
       .from(transactionItems)
-      .leftJoin(products, eq(transactionItems.productId, products.id))
       .innerJoin(transactions, eq(transactionItems.transactionId, transactions.id))
       .where(
         and(
@@ -330,24 +329,24 @@ export async function computeAnalytics(kodeToko: string): Promise<AnalyticsData>
     netProfit30d,
   };
 
-  // ── Kategori Breakdown ────────────────────────────────────────────────────
-  const catRevMap = new Map<string | null, { name: string; revenue: number; items: number }>();
+  // ── Kategori Breakdown (Snapshot Historis kategori_nama) ──────────────────
+  const catRevMap = new Map<string, { name: string; revenue: number; items: number }>();
   for (const item of txItems30d) {
-    const catKey = item.categoryId ?? "__none__";
-    const existing = catRevMap.get(catKey);
+    const catName = item.kategoriNama?.trim() || "Tanpa Kategori";
+    const existing = catRevMap.get(catName);
     const rev = parseFloat(String(item.subtotal));
     if (existing) {
       existing.revenue += rev;
       existing.items += item.qty;
     } else {
-      catRevMap.set(catKey, { name: catKey === "__none__" ? "Lain-lain" : catKey, revenue: rev, items: item.qty });
+      catRevMap.set(catName, { name: catName, revenue: rev, items: item.qty });
     }
   }
 
   const catTotal = revenue30d || 1;
   const categoryBreakdown: CategoryBreakdown[] = Array.from(catRevMap.entries())
-    .map(([catId, v]) => ({
-      categoryId: catId === "__none__" ? null : catId,
+    .map(([catName, v]) => ({
+      categoryId: catName,
       categoryName: v.name,
       revenue: v.revenue,
       itemsSold: v.items,

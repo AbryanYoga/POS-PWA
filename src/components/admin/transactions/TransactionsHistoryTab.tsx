@@ -144,7 +144,7 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* 1. Header & Quick Summary */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
-        <div className="ui-card" style={{ padding: "16px 20px" }}>
+        <div className="ui-card admin-card-anim anim-delay-0" style={{ padding: "16px 20px" }}>
           <div style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
             {isEn ? "Total Revenue" : "Total Pendapatan"}
           </div>
@@ -156,13 +156,25 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
           </div>
         </div>
 
-        <div className="ui-card" style={{ padding: "16px 20px" }}>
+        <div className="ui-card admin-card-anim anim-delay-1" style={{ padding: "16px 20px" }}>
           <div style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
             {isEn ? "Payment Breakdown" : "Metode Pembayaran"}
           </div>
           <div style={{ display: "flex", gap: 16, marginTop: 6, fontSize: 13, fontWeight: 600 }}>
-            <span style={{ color: "var(--primary)" }}>💵 Tunai: {summary.countCash}</span>
-            <span style={{ color: "var(--secondary)" }}>📱 QRIS: {summary.countQris}</span>
+            <span style={{ color: "var(--primary)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="2" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+              <span>{isEn ? "Cash" : "Tunai"}: {summary.countCash}</span>
+            </span>
+            <span style={{ color: "var(--secondary)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                <line x1="12" y1="18" x2="12.01" y2="18" />
+              </svg>
+              <span>QRIS: {summary.countQris}</span>
+            </span>
           </div>
           <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>
             {isEn ? "In selected date filter" : "Dalam periode terpilih"}
@@ -171,7 +183,7 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
       </div>
 
       {/* 2. Filter Bar */}
-      <div className="ui-card" style={{ padding: 16 }}>
+      <div className="ui-card admin-card-anim anim-delay-2" style={{ padding: 16 }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           {/* Period Pills */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -246,9 +258,16 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
                   fontSize: 12,
                   fontWeight: 600,
                   cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
+                title={isEn ? "Search" : "Cari"}
               >
-                🔍
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
               </button>
             </form>
 
@@ -264,19 +283,24 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: "pointer",
-                display: "flex",
+                display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
               }}
             >
-              📥 {isEn ? "Export CSV" : "Ekspor CSV"}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>{isEn ? "Export CSV" : "Ekspor CSV"}</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* 3. Transactions Table */}
-      <div className="ui-card" style={{ padding: 0, overflow: "hidden" }}>
+      <div className="ui-card admin-card-anim anim-delay-3" style={{ padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0 }}>
             {isEn ? "Transaction Records" : "Daftar Riwayat Transaksi"}
@@ -288,7 +312,15 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
 
         {transactionsList.length === 0 ? (
           <div style={{ padding: 48, textAlign: "center", color: "var(--text-muted)" }}>
-            <div style={{ fontSize: 32, marginBottom: 8 }}>🛒</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+              <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--bg-muted)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)" }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              </div>
+            </div>
             <div style={{ fontWeight: 600, fontSize: 14 }}>
               {isEn ? "No transactions found" : "Belum ada transaksi pada periode ini"}
             </div>
@@ -366,9 +398,18 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
                           fontWeight: 600,
                           cursor: "pointer",
                           color: "var(--primary)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
                         }}
                       >
-                        🔍 {isEn ? "Detail & Struk" : "Detail & Struk"}
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                          <line x1="16" y1="13" x2="8" y2="13" />
+                          <line x1="16" y1="17" x2="8" y2="17" />
+                        </svg>
+                        <span>{isEn ? "Detail & Struk" : "Detail & Struk"}</span>
                       </button>
                     </td>
                   </tr>
@@ -525,9 +566,18 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
                     fontSize: 12,
                     fontWeight: 700,
                     cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
                   }}
                 >
-                  🖨️ {isEn ? "Print Receipt" : "Cetak Struk"}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9" />
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                    <rect x="6" y="14" width="12" height="8" />
+                  </svg>
+                  <span>{isEn ? "Print Receipt" : "Cetak Struk"}</span>
                 </button>
                 <button
                   type="button"
@@ -542,9 +592,17 @@ export function TransactionsHistoryTab({ lang }: TransactionsHistoryTabProps) {
                     fontSize: 12,
                     fontWeight: 700,
                     cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
                   }}
                 >
-                  📋 {isEn ? "Copy Text" : "Salin Teks"}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <span>{isEn ? "Copy Text" : "Salin Teks"}</span>
                 </button>
               </div>
               <button

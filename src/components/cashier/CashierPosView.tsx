@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
+import React, { useState, useEffect, useTransition, useId } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import QRCode from "qrcode";
 import { logoutAction } from "@/lib/actions/auth-actions";
 import {
   processCheckoutAction,
@@ -11,7 +13,6 @@ import {
 import { useToast } from "@/components/ui/Toast";
 import { formatRupiah } from "@/lib/utils";
 import type { Language } from "@/lib/translations";
-import "@/app/cashier/cashier.css";
 
 interface ProductItem {
   id: string;
@@ -47,8 +48,14 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
 
   // Payment Modal States
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "QRIS">("CASH");
+  const [paymentMethod, setPaymentMethod] = useState<"CASH" | "NON_CASH">("CASH");
+  const [nonCashChannel, setNonCashChannel] = useState<"QRIS" | "BCA" | "BRI" | "MANDIRI">("QRIS");
   const [cashAmount, setCashAmount] = useState<number>(0);
+  const [cashInputStr, setCashInputStr] = useState<string>("");
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const [dummyVaSuffix, setDummyVaSuffix] = useState<string>("7890");
+  const [copiedVa, setCopiedVa] = useState(false);
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [idempotencyKey, setIdempotencyKey] = useState<string>("");
   const [receiptWidth, setReceiptWidth] = useState<"58mm" | "80mm">("58mm");
   const [isSubmitting, startTransition] = useTransition();
@@ -147,11 +154,94 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
     setCart([]);
   };
 
+  // Dynamic QR Code generation for QRIS
+  useEffect(() => {
+    if (isPaymentModalOpen && paymentMethod === "NON_CASH" && nonCashChannel === "QRIS") {
+      const storeName = data.store.namaToko || "POS";
+      const qrisPayload = `00020101021226${data.store.kodeToko}520458125303360540${cartSubtotal}5802ID59${storeName.length.toString().padStart(2, "0")}${storeName}6007JAKARTA6304`;
+      QRCode.toDataURL(qrisPayload, {
+        width: 220,
+        margin: 1,
+        color: {
+          dark: "#1A202C",
+          light: "#FFFFFF",
+        },
+      })
+        .then((url) => setQrCodeDataUrl(url))
+        .catch((err) => console.error("Error generating QRIS:", err));
+    }
+  }, [isPaymentModalOpen, paymentMethod, nonCashChannel, cartSubtotal, data.store]);
+
+  const NON_CASH_CHANNELS = [
+    {
+      id: "QRIS" as const,
+      name: "QRIS",
+      logo: "/logo_payment/qris.png",
+      desc: "QRIS All E-Wallet & Bank",
+    },
+    {
+      id: "BCA" as const,
+      name: "Bank BCA",
+      logo: "/logo_payment/bca.png",
+      desc: "Virtual Account BCA",
+    },
+    {
+      id: "BRI" as const,
+      name: "Bank BRI",
+      logo: "/logo_payment/bri.png",
+      desc: "BRIVA Virtual Account",
+    },
+    {
+      id: "MANDIRI" as const,
+      name: "Bank Mandiri",
+      logo: "/logo_payment/mandiri.png",
+      desc: "Mandiri Virtual Account",
+    },
+  ];
+
+  const getVaNumber = (channelId: "BCA" | "BRI" | "MANDIRI") => {
+    const bankCodes: Record<string, string> = {
+      BCA: "1234",
+      BRI: "5678",
+      MANDIRI: "9012",
+    };
+    const code = bankCodes[channelId] || "1234";
+    return `8808-${code}-${dummyVaSuffix}`;
+  };
+
+  const handleCopyVa = (vaNumber: string) => {
+    navigator.clipboard.writeText(vaNumber.replace(/-/g, ""));
+    setCopiedVa(true);
+    showToast(isEn ? "VA Number copied!" : "Nomor Virtual Account disalin!", "success");
+    setTimeout(() => setCopiedVa(false), 2000);
+  };
+
+  const handleCashInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawDigits = e.target.value.replace(/\D/g, "");
+    if (!rawDigits) {
+      setCashInputStr("");
+      setCashAmount(0);
+      return;
+    }
+    const num = parseInt(rawDigits, 10);
+    setCashAmount(num);
+    setCashInputStr(num.toLocaleString("id-ID"));
+  };
+
+  const handleSetQuickCash = (amount: number) => {
+    setCashAmount(amount);
+    setCashInputStr(amount ? amount.toLocaleString("id-ID") : "");
+  };
+
   const handleOpenPayment = () => {
     if (cart.length === 0) return;
-    setCashAmount(cartSubtotal); // default exact amount
+    setCashAmount(cartSubtotal);
+    setCashInputStr(cartSubtotal ? cartSubtotal.toLocaleString("id-ID") : "");
     setPaymentMethod("CASH");
-    // Generate fresh UUID idempotency key on each payment modal open
+    setNonCashChannel("QRIS");
+    const random4 = Math.floor(1000 + Math.random() * 9000).toString();
+    setDummyVaSuffix(random4);
+
     const generatedKey =
       typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
@@ -173,6 +263,14 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
       return;
     }
 
+    let finalMethod = "Tunai";
+    if (paymentMethod === "NON_CASH") {
+      if (nonCashChannel === "QRIS") finalMethod = "QRIS";
+      else if (nonCashChannel === "BCA") finalMethod = "Bank BCA";
+      else if (nonCashChannel === "BRI") finalMethod = "Bank BRI";
+      else if (nonCashChannel === "MANDIRI") finalMethod = "Bank Mandiri";
+    }
+
     startTransition(async () => {
       try {
         const payload = {
@@ -181,7 +279,7 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
             qty: c.qty,
             catatan: c.catatan,
           })),
-          metodePembayaran: paymentMethod,
+          metodePembayaran: finalMethod,
           bayar: paymentMethod === "CASH" ? cashAmount : cartSubtotal,
           kembalian:
             paymentMethod === "CASH"
@@ -223,6 +321,10 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
 
   const handleCopyReceiptText = () => {
     if (!completedTx) return;
+    const isCompletedCash =
+      completedTx.metodePembayaran === "CASH" ||
+      completedTx.metodePembayaran === "Tunai";
+
     const lines = [
       `================================`,
       `       ${data.store.namaToko.toUpperCase()}`,
@@ -240,7 +342,7 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
       `--------------------------------`,
       `TOTAL   : Rp ${completedTx.total.toLocaleString("id-ID")}`,
       `BAYAR   : Rp ${completedTx.bayar.toLocaleString("id-ID")} (${completedTx.metodePembayaran})`,
-      completedTx.metodePembayaran === "CASH"
+      isCompletedCash
         ? `KEMBALI : Rp ${completedTx.kembalian.toLocaleString("id-ID")}`
         : "",
       `================================`,
@@ -668,21 +770,23 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
                 <span style={{ fontSize: 20 }}>{formatRupiah(cartSubtotal)}</span>
               </div>
 
-              {/* Methods Grid */}
+              {/* Primary Method Tabs */}
               <div className="payment-methods-grid">
                 <div
                   className={`payment-method-card ${paymentMethod === "CASH" ? "active" : ""}`}
                   onClick={() => setPaymentMethod("CASH")}
+                  id="btnMethodCash"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="2" y="6" width="20" height="12" rx="2" />
                     <circle cx="12" cy="12" r="2" />
                   </svg>
-                  <span style={{ fontWeight: 600, fontSize: 13 }}>Tunai (Cash)</span>
+                  <span style={{ fontWeight: 600, fontSize: 13 }}>{isEn ? "Cash" : "Tunai (Cash)"}</span>
                 </div>
                 <div
-                  className={`payment-method-card ${paymentMethod === "QRIS" ? "active" : ""}`}
-                  onClick={() => setPaymentMethod("QRIS")}
+                  className={`payment-method-card ${paymentMethod === "NON_CASH" ? "active" : ""}`}
+                  onClick={() => setPaymentMethod("NON_CASH")}
+                  id="btnMethodNonCash"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="3" width="7" height="7" />
@@ -690,109 +794,286 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
                     <rect x="14" y="14" width="7" height="7" />
                     <rect x="3" y="14" width="7" height="7" />
                   </svg>
-                  <span style={{ fontWeight: 600, fontSize: 13 }}>QRIS (Non-Cash)</span>
+                  <span style={{ fontWeight: 600, fontSize: 13 }}>{isEn ? "Non-Cash (QRIS/Bank)" : "Non Tunai (QRIS/Bank)"}</span>
                 </div>
               </div>
 
               {paymentMethod === "CASH" ? (
                 <>
-                  <div>
+                  <div style={{ marginTop: 12 }}>
                     <label style={{ fontSize: 12, fontWeight: 600, display: "block", marginBottom: 6 }}>
-                      {isEn ? "Cash Received" : "Uang Diterima (Rp)"}
+                      {isEn ? "Cash Received (Rp)" : "Uang Diterima (Rp)"}
                     </label>
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       className="search-input-box"
                       style={{ padding: "0 14px", fontFamily: "var(--font-mono)", fontSize: 16, fontWeight: 700 }}
-                      value={cashAmount || ""}
-                      onChange={(e) => setCashAmount(Number(e.target.value) || 0)}
+                      value={cashInputStr}
+                      onChange={handleCashInputChange}
                       placeholder="0"
+                      id="inputCashReceived"
+                      autoFocus
                     />
                   </div>
 
                   {/* Quick Money Buttons */}
-                  <div className="quick-money-grid">
+                  <div className="quick-money-grid" style={{ marginTop: 10 }}>
                     <button
                       type="button"
                       className="quick-money-btn"
-                      onClick={() => setCashAmount(cartSubtotal)}
+                      onClick={() => handleSetQuickCash(cartSubtotal)}
                     >
                       Uang Pas
                     </button>
                     <button
                       type="button"
                       className="quick-money-btn"
-                      onClick={() => setCashAmount(50000)}
+                      onClick={() => handleSetQuickCash(50000)}
                     >
                       50.000
                     </button>
                     <button
                       type="button"
                       className="quick-money-btn"
-                      onClick={() => setCashAmount(100000)}
+                      onClick={() => handleSetQuickCash(100000)}
                     >
                       100.000
                     </button>
                     <button
                       type="button"
                       className="quick-money-btn"
-                      onClick={() => setCashAmount(200000)}
+                      onClick={() => handleSetQuickCash(200000)}
                     >
                       200.000
                     </button>
                   </div>
 
                   {/* Change Preview */}
-                  <div className="change-preview-box">
+                  <div className="change-preview-box" style={{ marginTop: 12 }}>
                     <span>{isEn ? "Change:" : "Kembalian:"}</span>
                     <span style={{ fontFamily: "var(--font-mono)", fontSize: 18, color: "var(--primary)" }}>
                       {formatRupiah(changeAmount)}
                     </span>
                   </div>
+
+                  <button
+                    type="button"
+                    className="btn-charge-action"
+                    id="btnSubmitPayment"
+                    style={{ marginTop: 14 }}
+                    disabled={isSubmitting || cashAmount < cartSubtotal}
+                    onClick={handleProcessPayment}
+                  >
+                    {isSubmitting ? (
+                      <span className="btn-loading-wrap">
+                        <span className="spinner-sm"></span>
+                        <span>{isEn ? "Processing Transaction..." : "Memproses Transaksi..."}</span>
+                      </span>
+                    ) : (
+                      <span>{isEn ? "Complete Cash Payment" : "Selesaikan Pembayaran Tunai"}</span>
+                    )}
+                  </button>
                 </>
               ) : (
-                <div style={{ textAlign: "center", padding: "16px 0", color: "var(--text-muted)" }}>
-                  <div
-                    style={{
-                      width: 140,
-                      height: 140,
-                      margin: "0 auto 12px auto",
-                      border: "2px dashed var(--border)",
-                      borderRadius: 8,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background: "var(--bg-muted)",
-                      fontWeight: 700,
-                      color: "var(--primary)",
-                    }}
-                  >
-                    QRIS CODE
+                <>
+                  {/* Channel Selector */}
+                  <div className="payment-channels-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                    <span>{isEn ? "Select Payment Channel:" : "Pilih Channel Pembayaran:"}</span>
                   </div>
-                  <p style={{ fontSize: 12 }}>
-                    {isEn
-                      ? "Ask customer to scan dynamic QRIS code."
-                      : "Arahkan pelanggan untuk memindai kode QRIS pada monitor kasir."}
-                  </p>
-                </div>
-              )}
 
-              <button
-                type="button"
-                className="btn-charge-action"
-                id="btnSubmitPayment"
-                disabled={isSubmitting || (paymentMethod === "CASH" && cashAmount < cartSubtotal)}
-                onClick={handleProcessPayment}
-              >
-                {isSubmitting ? (
-                  <span className="btn-loading-wrap">
-                    <span className="spinner-sm"></span>
-                    <span>{isEn ? "Processing Transaction..." : "Memproses Transaksi..."}</span>
-                  </span>
-                ) : (
-                  <span>{isEn ? "Complete Payment" : "Selesaikan Pembayaran"}</span>
-                )}
-              </button>
+                  <div className="payment-channels-grid">
+                    {NON_CASH_CHANNELS.map((ch) => {
+                      const isActive = nonCashChannel === ch.id;
+                      const hasErr = imageErrors[ch.id];
+                      return (
+                        <button
+                          key={ch.id}
+                          type="button"
+                          className={`payment-channel-btn ${isActive ? "active" : ""}`}
+                          onClick={() => setNonCashChannel(ch.id)}
+                          id={`btnChannel-${ch.id}`}
+                        >
+                          <div className="payment-channel-logo-wrap">
+                            {!hasErr ? (
+                              <Image
+                                src={ch.logo}
+                                alt={ch.name}
+                                width={44}
+                                height={22}
+                                style={{ objectFit: "contain" }}
+                                onError={() => setImageErrors((prev) => ({ ...prev, [ch.id]: true }))}
+                              />
+                            ) : (
+                              <span style={{ fontSize: 10, fontWeight: 700, color: "var(--primary)" }}>
+                                {ch.id}
+                              </span>
+                            )}
+                          </div>
+                          <span className="payment-channel-name">{ch.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Channel Details Box */}
+                  <div className="noncash-details-box">
+                    {nonCashChannel === "QRIS" ? (
+                      <div>
+                        <div className="qris-qr-wrapper">
+                          <span className="simulasi-badge" id="badgeSimulasiQris">SIMULASI</span>
+                          {qrCodeDataUrl ? (
+                            <img
+                              src={qrCodeDataUrl}
+                              alt="QRIS Code"
+                              className="qris-qr-image"
+                              id="qrisCodeImage"
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: 180,
+                                height: 180,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                background: "#FAFAFA",
+                                color: "var(--text-muted)",
+                                fontSize: 12,
+                              }}
+                            >
+                              Generating QR...
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={{ fontWeight: 800, fontSize: 14, color: "var(--text-heading)", marginBottom: 2 }}>
+                          {data.store.namaToko}
+                        </div>
+                        <div style={{ fontFamily: "var(--font-mono)", fontSize: 16, fontWeight: 800, color: "var(--primary)", marginBottom: 6 }}>
+                          {formatRupiah(cartSubtotal)}
+                        </div>
+                        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "0 auto", maxWidth: 280, lineHeight: 1.35 }}>
+                          {isEn
+                            ? "Scan QRIS using mobile banking (BCA, Mandiri, BRI, BNI) or e-wallets (GoPay, OVO, Dana, ShopeePay)."
+                            : "Pindai QRIS dengan m-banking (BCA, Mandiri, BRI, BNI) atau e-wallet (GoPay, OVO, Dana, ShopeePay)."}
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        {/* Virtual Account Bank View */}
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8 }}>
+                          <div style={{ width: 48, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {!imageErrors[nonCashChannel] ? (
+                              <Image
+                                src={
+                                  NON_CASH_CHANNELS.find((c) => c.id === nonCashChannel)?.logo ||
+                                  "/logo_payment/bca.png"
+                                }
+                                alt={nonCashChannel}
+                                width={48}
+                                height={24}
+                                style={{ objectFit: "contain" }}
+                                onError={() =>
+                                  setImageErrors((prev) => ({ ...prev, [nonCashChannel]: true }))
+                                }
+                              />
+                            ) : (
+                              <span style={{ fontWeight: 800, fontSize: 12, color: "var(--primary)" }}>
+                                {nonCashChannel}
+                              </span>
+                            )}
+                          </div>
+                          <strong style={{ fontSize: 13, color: "var(--text-heading)" }}>
+                            {NON_CASH_CHANNELS.find((c) => c.id === nonCashChannel)?.name}
+                          </strong>
+                        </div>
+
+                        <div className="va-details-card">
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                            <span className="simulasi-badge-va" id="badgeSimulasiVa">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                              </svg>
+                              SIMULASI (DEMO)
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyVa(getVaNumber(nonCashChannel))}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                fontSize: 11,
+                                color: "var(--primary)",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              {copiedVa ? "Tersalin!" : "Salin VA"}
+                            </button>
+                          </div>
+                          <div className="va-row">
+                            <span style={{ color: "var(--text-muted)" }}>Nomor Virtual Account</span>
+                          </div>
+                          <div style={{ textAlign: "center", padding: "4px 0 8px 0" }}>
+                            <span className="va-number-badge" id="vaNumberDisplay">
+                              {getVaNumber(nonCashChannel)}
+                            </span>
+                          </div>
+                          <div className="va-row">
+                            <span style={{ color: "var(--text-muted)" }}>Penerima:</span>
+                            <strong style={{ color: "var(--text-heading)" }}>{data.store.namaToko}</strong>
+                          </div>
+                          <div className="va-row">
+                            <span style={{ color: "var(--text-muted)" }}>Nominal Transfer:</span>
+                            <strong style={{ color: "var(--primary)", fontFamily: "var(--font-mono)" }}>
+                              {formatRupiah(cartSubtotal)}
+                            </strong>
+                          </div>
+                        </div>
+
+                        <p style={{ fontSize: 11, color: "var(--text-muted)", margin: "0 auto", maxWidth: 280, lineHeight: 1.35 }}>
+                          {isEn
+                            ? "Ensure transfer confirmation matches the exact amount before completing."
+                            : "Pastikan transfer sesuai nominal telah masuk ke rekening sebelum menyelesaikan transaksi."}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn-charge-action"
+                    id="btnSubmitPayment"
+                    disabled={isSubmitting}
+                    onClick={handleProcessPayment}
+                  >
+                    {isSubmitting ? (
+                      <span className="btn-loading-wrap">
+                        <span className="spinner-sm"></span>
+                        <span>{isEn ? "Processing Transaction..." : "Memproses Transaksi..."}</span>
+                      </span>
+                    ) : (
+                      <span>
+                        {nonCashChannel === "QRIS"
+                          ? isEn
+                            ? "Confirm Payment Received"
+                            : "Konfirmasi Pembayaran Diterima"
+                          : isEn
+                          ? "Confirm Transfer Received"
+                          : "Konfirmasi Transfer Diterima"}
+                      </span>
+                    )}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -892,7 +1173,7 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
                   <span>BAYAR ({completedTx.metodePembayaran}):</span>
                   <span>{formatRupiah(completedTx.bayar)}</span>
                 </div>
-                {completedTx.metodePembayaran === "CASH" && (
+                {(completedTx.metodePembayaran === "CASH" || completedTx.metodePembayaran === "Tunai") && (
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10 }}>
                     <span>KEMBALIAN:</span>
                     <span>{formatRupiah(completedTx.kembalian)}</span>
@@ -911,26 +1192,38 @@ export function CashierPosView({ initialData }: CashierPosViewProps) {
                     type="button"
                     className="btn-charge-action"
                     onClick={() => window.print()}
-                    style={{ flex: 1, background: "var(--secondary)" }}
+                    style={{ flex: 1, background: "var(--secondary)", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                   >
-                    🖨️ {isEn ? "Print Receipt" : "Cetak Thermal"}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 6 2 18 2 18 9" />
+                      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                      <rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                    <span>{isEn ? "Print Receipt" : "Cetak Thermal"}</span>
                   </button>
                   <button
                     type="button"
                     className="btn-charge-action"
                     onClick={handleCopyReceiptText}
-                    style={{ flex: 1, background: "var(--bg-muted)", color: "var(--text-heading)", border: "1px solid var(--border)" }}
+                    style={{ flex: 1, background: "var(--bg-muted)", color: "var(--text-heading)", border: "1px solid var(--border)", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                   >
-                    📋 {isEn ? "Copy Text" : "Salin Teks"}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    <span>{isEn ? "Copy Text" : "Salin Teks"}</span>
                   </button>
                 </div>
                 <button
                   type="button"
                   className="btn-charge-action"
                   onClick={() => setCompletedTx(null)}
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                 >
-                  ✓ {isEn ? "New Order" : "Transaksi Baru"}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{isEn ? "New Order" : "Transaksi Baru"}</span>
                 </button>
               </div>
             </div>

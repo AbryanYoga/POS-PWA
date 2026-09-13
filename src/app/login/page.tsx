@@ -6,7 +6,6 @@ import Link from "next/link";
 import { TRANSLATIONS, type Language } from "@/lib/translations";
 import { useToast } from "@/components/ui/Toast";
 import { loginAction } from "@/lib/actions/auth-actions";
-import "./login.css";
 
 export default function LoginPage() {
   const router = useRouter();

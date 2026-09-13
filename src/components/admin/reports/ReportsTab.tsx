@@ -119,7 +119,7 @@ export function ReportsTab({ lang }: ReportsTabProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* 1. Header & Filter Bar */}
-      <div className="ui-card" style={{ padding: 16 }}>
+      <div className="ui-card admin-card-anim anim-delay-0" style={{ padding: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           {/* Period Selector */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -178,9 +178,17 @@ export function ReportsTab({ lang }: ReportsTabProps) {
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
-              📥 {isEn ? "Export Report" : "Ekspor Laporan"}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              <span>{isEn ? "Export Report" : "Ekspor Laporan"}</span>
             </button>
           </div>
         </div>
@@ -190,7 +198,7 @@ export function ReportsTab({ lang }: ReportsTabProps) {
       {reportData && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
           {/* Omset */}
-          <div className="ui-card" style={{ padding: "16px 20px" }}>
+          <div className="ui-card admin-card-anim anim-delay-1" style={{ padding: "16px 20px" }}>
             <div style={{ fontSize: 11.5, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
               {isEn ? "Gross Revenue" : "Total Omset (Penjualan)"}
             </div>
@@ -203,7 +211,7 @@ export function ReportsTab({ lang }: ReportsTabProps) {
           </div>
 
           {/* Laba Kotor */}
-          <div className="ui-card" style={{ padding: "16px 20px" }}>
+          <div className="ui-card admin-card-anim anim-delay-2" style={{ padding: "16px 20px" }}>
             <div style={{ fontSize: 11.5, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
               {isEn ? "Gross Profit (Revenue - COGS)" : "Laba Kotor (Omset - HPP)"}
             </div>
@@ -216,7 +224,7 @@ export function ReportsTab({ lang }: ReportsTabProps) {
           </div>
 
           {/* Pengeluaran */}
-          <div className="ui-card" style={{ padding: "16px 20px" }}>
+          <div className="ui-card admin-card-anim anim-delay-3" style={{ padding: "16px 20px" }}>
             <div style={{ fontSize: 11.5, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
               {isEn ? "Operational Expenses" : "Beban Pengeluaran Operasional"}
             </div>
@@ -229,7 +237,7 @@ export function ReportsTab({ lang }: ReportsTabProps) {
           </div>
 
           {/* Laba Bersih */}
-          <div className="ui-card" style={{ padding: "16px 20px" }}>
+          <div className="ui-card admin-card-anim anim-delay-4" style={{ padding: "16px 20px" }}>
             <div style={{ fontSize: 11.5, color: "var(--text-muted)", fontWeight: 600, marginBottom: 4 }}>
               {isEn ? "Net Profit" : "Laba Bersih (Net Profit)"}
             </div>
@@ -254,9 +262,16 @@ export function ReportsTab({ lang }: ReportsTabProps) {
       {reportData && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 16 }}>
           {/* Best Sellers */}
-          <div className="ui-card" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)", fontWeight: 700, fontSize: 13 }}>
-              🏆 {isEn ? "Top 10 Best Selling Products" : "10 Produk Terlaris"}
+          <div className="ui-card admin-card-anim anim-delay-5" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                <path d="M4 22h16" />
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2a1 1 0 0 1-1-1v-2.34" />
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+              </svg>
+              <span>{isEn ? "Top 10 Best Selling Products" : "10 Produk Terlaris"}</span>
             </div>
             {reportData.bestSellers.length === 0 ? (
               <div style={{ padding: 32, textAlign: "center", color: "var(--text-muted)", fontSize: 12 }}>
@@ -294,9 +309,15 @@ export function ReportsTab({ lang }: ReportsTabProps) {
           </div>
 
           {/* Expenses List */}
-          <div className="ui-card" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="ui-card admin-card-anim anim-delay-6" style={{ padding: 0, overflow: "hidden" }}>
             <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border)", fontWeight: 700, fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>💸 {isEn ? "Operational Expenses" : "Catatan Pengeluaran Operasional"}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="2" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg>
+                <span>{isEn ? "Operational Expenses" : "Catatan Pengeluaran Operasional"}</span>
+              </span>
               <button
                 type="button"
                 onClick={() => setIsExpenseModalOpen(true)}
@@ -337,10 +358,15 @@ export function ReportsTab({ lang }: ReportsTabProps) {
                           <button
                             type="button"
                             onClick={() => handleDeleteExpense(ex.id)}
-                            style={{ background: "none", border: "none", color: "#C84B31", cursor: "pointer", fontSize: 12 }}
-                            title="Hapus"
+                            style={{ background: "none", border: "none", color: "#C84B31", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                            title={isEn ? "Delete" : "Hapus"}
                           >
-                            🗑️
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              <line x1="10" y1="11" x2="10" y2="17" />
+                              <line x1="14" y1="11" x2="14" y2="17" />
+                            </svg>
                           </button>
                         </td>
                       </tr>

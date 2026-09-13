@@ -62,11 +62,54 @@ function ScoreArc({ score }: { score: number }) {
 }
 
 function SwotCard({ items, type }: { items: SwotItem[]; type: SwotItem["type"] }) {
-  const CONFIG: Record<SwotItem["type"], { label: string; icon: string; bg: string; border: string; color: string }> = {
-    strength: { label: "Kekuatan", icon: "💪", bg: "#ECFDF5", border: "#6EE7B7", color: "#059669" },
-    weakness: { label: "Kelemahan", icon: "⚠️", bg: "#FEF2F2", border: "#FCA5A5", color: "#DC2626" },
-    opportunity: { label: "Peluang", icon: "🚀", bg: "#EFF6FF", border: "#93C5FD", color: "#2563EB" },
-    threat: { label: "Ancaman", icon: "🛡️", bg: "#FFFBEB", border: "#FCD34D", color: "#D97706" },
+  const CONFIG: Record<SwotItem["type"], { label: string; icon: React.ReactNode; bg: string; border: string; color: string }> = {
+    strength: {
+      label: "Kekuatan",
+      icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+          <polyline points="17 6 23 6 23 12" />
+        </svg>
+      ),
+      bg: "#ECFDF5",
+      border: "#6EE7B7",
+      color: "#059669",
+    },
+    weakness: {
+      label: "Kelemahan",
+      icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      ),
+      bg: "#FEF2F2",
+      border: "#FCA5A5",
+      color: "#DC2626",
+    },
+    opportunity: {
+      label: "Peluang",
+      icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      ),
+      bg: "#EFF6FF",
+      border: "#93C5FD",
+      color: "#2563EB",
+    },
+    threat: {
+      label: "Ancaman",
+      icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      ),
+      bg: "#FFFBEB",
+      border: "#FCD34D",
+      color: "#D97706",
+    },
   };
   const cfg = CONFIG[type];
   const filtered = items.filter((s) => s.type === type);
@@ -171,7 +214,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
   return (
     <div className="analytics-tab">
       {/* ── Header ────────────────────────────────────────────────────── */}
-      <div className="tab-section-header">
+      <div className="tab-section-header admin-card-anim anim-delay-0">
         <div>
           <h2 className="tab-section-title">Analytics & Business Intelligence</h2>
           <p className="tab-section-subtitle">
@@ -197,7 +240,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
       {/* ── ROW 1: Health Score + KPI Cards ───────────────────────────── */}
       <div className="analytics-top-row">
         {/* Health Score Card */}
-        <div className="analytics-health-card">
+        <div className="analytics-health-card admin-card-anim anim-delay-1">
           <div className="analytics-health-header">
             <span className="analytics-health-title">Business Health Score</span>
             <span className="analytics-health-badge" style={{ background: healthScore.color + "22", color: healthScore.color, border: `1px solid ${healthScore.color}44` }}>
@@ -235,7 +278,12 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
               label: "Revenue 30 Hari",
               value: formatRupiah(kpi.revenue30d),
               sub: `Hari ini: ${formatRupiah(kpi.revenueToday)}`,
-              icon: "💰",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                  <circle cx="12" cy="12" r="2" />
+                </svg>
+              ),
               color: "#059669",
             },
             {
@@ -243,40 +291,67 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
               value: formatRupiah(kpi.revenue7d),
               sub: pctLabel,
               subColor: pctColor,
-              icon: "📈",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  <polyline points="17 6 23 6 23 12" />
+                </svg>
+              ),
               color: pctChange !== null && pctChange < 0 ? "#DC2626" : "#3B82F6",
             },
             {
               label: "Average Order Value",
               value: formatRupiah(kpi.aov),
               sub: `${kpi.txCount30d} transaksi / 30 hari`,
-              icon: "🛒",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              ),
               color: "#8B5CF6",
             },
             {
               label: "Gross Margin",
               value: `${kpi.grossMarginPct.toFixed(1)}%`,
               sub: `Laba kotor: ${formatRupiah(kpi.grossProfit)}`,
-              icon: "📊",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+              ),
               color: kpi.grossMarginPct >= 30 ? "#059669" : "#F59E0B",
             },
             {
               label: "Net Profit 30 Hari",
               value: formatRupiah(kpi.netProfit30d),
               sub: `Pengeluaran: ${formatRupiah(kpi.totalExpenses30d)}`,
-              icon: "💵",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                  <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                </svg>
+              ),
               color: kpi.netProfit30d >= 0 ? "#059669" : "#DC2626",
             },
             {
               label: "Jam Puncak Transaksi",
               value: `${String(kpi.peakHour).padStart(2, "0")}:00`,
               sub: `${kpi.txPerDay.toFixed(1)} transaksi/hari rata-rata`,
-              icon: "⏰",
+              icon: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              ),
               color: "#F59E0B",
             },
           ].map((card, i) => (
-            <div key={i} className="analytics-kpi-card" id={`kpiCard_${i}`}>
-              <div className="analytics-kpi-icon" style={{ background: card.color + "18" }}>
+            <div key={i} className={`analytics-kpi-card admin-card-anim anim-delay-${Math.min(i + 1, 6)}`} id={`kpiCard_${i}`}>
+              <div className="analytics-kpi-icon" style={{ background: card.color + "18", color: card.color }}>
                 <span>{card.icon}</span>
               </div>
               <div className="analytics-kpi-info">
@@ -294,7 +369,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
       </div>
 
       {/* ── ROW 2: SWOT ───────────────────────────────────────────────── */}
-      <div className="analytics-section">
+      <div className="analytics-section admin-card-anim anim-delay-3">
         <h3 className="analytics-section-title">Analisis SWOT Otomatis</h3>
         <p className="analytics-section-sub">Dihasilkan dari data transaksi aktual — diperbarui setiap kali halaman dimuat</p>
         <div className="analytics-swot-grid">
@@ -308,7 +383,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
       {/* ── ROW 3: Hourly + Category ───────────────────────────────────── */}
       <div className="analytics-bottom-row">
         {/* Distribusi Per Jam */}
-        <div className="analytics-card">
+        <div className="analytics-card admin-card-anim anim-delay-4">
           <div className="analytics-card-header">
             <div className="analytics-card-title">Distribusi Transaksi Per Jam (WIB)</div>
             <div className="analytics-card-sub">30 hari terakhir · jam {String(kpi.peakHour).padStart(2,"0")}:00 adalah jam paling ramai</div>
@@ -324,7 +399,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
         </div>
 
         {/* Top 5 Kategori */}
-        <div className="analytics-card">
+        <div className="analytics-card admin-card-anim anim-delay-5">
           <div className="analytics-card-header">
             <div className="analytics-card-title">Top 5 Kategori by Revenue</div>
             <div className="analytics-card-sub">30 hari terakhir</div>
@@ -362,7 +437,7 @@ export function AnalyticsTab({ lang, kodeToko }: Props) {
       </div>
 
       {/* ── Stok Health Summary ────────────────────────────────────────── */}
-      <div className="analytics-stock-row">
+      <div className="analytics-stock-row admin-card-anim anim-delay-6">
         <div className="analytics-stock-stat" style={{ borderColor: kpi.lowStokCount > 10 ? "#EF4444" : "#E4E1D8" }}>
           <div className="analytics-stock-num" style={{ color: kpi.lowStokCount > 10 ? "#EF4444" : "#141A17" }}>
             {kpi.lowStokCount}

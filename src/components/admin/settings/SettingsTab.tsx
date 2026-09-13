@@ -197,7 +197,7 @@ export function SettingsTab({ lang }: Props) {
   return (
     <div className="settings-tab-container">
       {/* ── Page Header ─────────────────────────────────────── */}
-      <div className="tab-section-header">
+      <div className="tab-section-header admin-card-anim anim-delay-0">
         <div>
           <h2 className="tab-section-title">
             {isEn ? "Settings" : "Pengaturan"}
@@ -225,7 +225,7 @@ export function SettingsTab({ lang }: Props) {
         <div className="settings-left-col">
 
           {/* ── Card 1: Store Info ──────────────────────────── */}
-          <div className="settings-card">
+          <div className="settings-card admin-card-anim anim-delay-1">
             <div className="settings-card-header">
               <div className="settings-card-icon blue">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -310,7 +310,7 @@ export function SettingsTab({ lang }: Props) {
           </div>
 
           {/* ── Card 2: Preferences ─────────────────────────── */}
-          <div className="settings-card">
+          <div className="settings-card admin-card-anim anim-delay-2">
             <div className="settings-card-header">
               <div className="settings-card-icon purple">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -405,7 +405,7 @@ export function SettingsTab({ lang }: Props) {
         <div className="settings-right-col">
 
           {/* ── Card 3: Security / Change Password ──────────── */}
-          <div className="settings-card">
+          <div className="settings-card admin-card-anim anim-delay-3">
             <div className="settings-card-header">
               <div className="settings-card-icon red">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -544,7 +544,7 @@ export function SettingsTab({ lang }: Props) {
           </div>
 
           {/* ── Card 4: System Info ──────────────────────────── */}
-          <div className="settings-card settings-sys-info">
+          <div className="settings-card settings-sys-info admin-card-anim anim-delay-4">
             <div className="settings-card-header">
               <div className="settings-card-icon green">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

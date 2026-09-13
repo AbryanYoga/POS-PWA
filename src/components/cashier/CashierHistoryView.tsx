@@ -10,7 +10,6 @@ import {
 } from "@/lib/actions/cashier-history-actions";
 import { useToast } from "@/components/ui/Toast";
 import { formatRupiah, formatWibDateTime } from "@/lib/utils";
-import "@/app/cashier/cashier.css";
 
 interface Props {
   cashierName: string;
@@ -103,10 +102,10 @@ export function CashierHistoryView({ cashierName, kodeToko }: Props) {
   // ─── Status badge ────────────────────────────────────────────────────
   const getStatusBadge = (status: string) => {
     if (status === "COMPLETED")
-      return <span className="hist-badge-completed">✓ Selesai</span>;
+      return <span className="hist-badge-completed">Selesai</span>;
     if (status === "VOID")
-      return <span className="hist-badge-void">✕ Void</span>;
-    return <span className="hist-badge-pending">⏳ Pending</span>;
+      return <span className="hist-badge-void">Void</span>;
+    return <span className="hist-badge-pending">Pending</span>;
   };
 
   const getMethodIcon = (method: string) => {

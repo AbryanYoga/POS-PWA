@@ -14,11 +14,15 @@ import { ReportsTab } from "./reports/ReportsTab";
 import { StaffManagementTab } from "./staff/StaffManagementTab";
 import { SettingsTab } from "./settings/SettingsTab";
 import { AnalyticsTab } from "./analytics/AnalyticsTab";
+import { ProductsTab } from "./products/ProductsTab";
+import { CategoriesTab } from "./categories/CategoriesTab";
 import { useToast } from "@/components/ui/Toast";
 import type { DashboardData } from "@/lib/actions/dashboard-actions";
 import { getDashboardData } from "@/lib/actions/dashboard-actions";
 import type { Language } from "@/lib/translations";
-import "@/app/admin/admin.css";
+import { TAB_KEYS } from "@/lib/tab-keys";
+import type { TabKey } from "@/lib/tab-keys";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 interface AdminDashboardViewProps {
   initialData: DashboardData;
@@ -27,10 +31,13 @@ interface AdminDashboardViewProps {
 export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
   const { showToast } = useToast();
   const [data, setData] = useState<DashboardData>(initialData);
-  const [activeTab, setActiveTab] = useState("tabDashboard");
+  const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.DASHBOARD);
   const [collapsed, setCollapsed] = useState(false);
   const [lang, setLang] = useState<Language>("id");
   const [isPending, startTransition] = useTransition();
+
+  // Scroll reveal — works on all tabs via MutationObserver
+  useScrollReveal();
 
   const isEn = lang === "en";
 
@@ -62,6 +69,11 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
       localStorage.setItem("pos_sidebar_collapsed", next ? "1" : "0");
       return next;
     });
+  };
+
+  // Cast string → TabKey (safe because AdminSidebar only emits TAB_KEYS values)
+  const handleSelectTab = (tab: string) => {
+    setActiveTab(tab as TabKey);
   };
 
   const handleToggleLang = () => {
@@ -144,7 +156,7 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
         collapsed={collapsed}
         onToggleCollapse={handleToggleCollapse}
         activeTab={activeTab}
-        onSelectTab={setActiveTab}
+        onSelectTab={handleSelectTab}
         storeName={data.user.namaToko}
         userName={data.user.namaLengkap}
         userEmail={data.user.email}
@@ -166,7 +178,7 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
           {activeTab === "tabDashboard" && (
             <section className="tab-pane active" id="tabDashboard">
               {/* Header Bar */}
-              <div className="dash-header-bar">
+              <div className="dash-header-bar" data-reveal="up" data-reveal-delay="0">
                 <div className="dash-welcome-text">
                   <h1 id="dashGreetingTitle">
                     {isEn ? "Welcome to" : "Selamat Datang di"}{" "}
@@ -201,6 +213,7 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
               {/* 4 Top KPI Cards */}
               <div className="kpi-cards-grid">
                 {/* 1. Total Income */}
+                <div className="admin-card-anim anim-delay-0">
                 <KpiCard
                   title="Total Income"
                   value={formatRupiah(data.metrics.totalIncome)}
@@ -221,8 +234,10 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                     </svg>
                   }
                 />
+                </div>
 
                 {/* 2. Total Expense */}
+                <div className="admin-card-anim anim-delay-1">
                 <KpiCard
                   title="Total Expense"
                   value={formatRupiah(data.metrics.totalExpense)}
@@ -243,8 +258,10 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                     </svg>
                   }
                 />
+                </div>
 
                 {/* 3. Net Profit */}
+                <div className="admin-card-anim anim-delay-2">
                 <KpiCard
                   title="Net Profit"
                   value={formatRupiah(data.metrics.netProfit)}
@@ -264,8 +281,10 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                     </svg>
                   }
                 />
+                </div>
 
                 {/* 4. Total Orders */}
+                <div className="admin-card-anim anim-delay-3">
                 <KpiCard
                   title="Total Orders"
                   value={data.metrics.totalOrders}
@@ -287,6 +306,7 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                     </svg>
                   }
                 />
+                </div>
               </div>
 
               {/* Main 2-Column Grid (Left 68% / Right 32%) */}
@@ -294,30 +314,36 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                 {/* LEFT COLUMN */}
                 <div className="dash-left-column">
                   {/* Daily Orders Curved SVG Chart */}
-                  <DailyOrdersChart
-                    data={data.dailyTrend}
-                    todayOrders={data.metrics.totalOrders}
-                    lang={lang}
-                    onRefresh={handleRefresh}
-                  />
+                  <div className="admin-card-anim anim-delay-4">
+                    <DailyOrdersChart
+                      data={data.dailyTrend}
+                      todayOrders={data.metrics.totalOrders}
+                      lang={lang}
+                      onRefresh={handleRefresh}
+                    />
+                  </div>
 
                   {/* Sub Grid: Top Selling & Recent Transactions */}
                   <div className="dash-sub-grid">
-                    <TopSellingList
-                      categories={data.topCategories}
-                      lang={lang}
-                    />
-                    <RecentTransactionsList
-                      transactions={data.recentTransactions}
-                      lang={lang}
-                    />
+                    <div className="admin-card-anim anim-delay-5">
+                      <TopSellingList
+                        categories={data.topCategories}
+                        lang={lang}
+                      />
+                    </div>
+                    <div className="admin-card-anim anim-delay-6">
+                      <RecentTransactionsList
+                        transactions={data.recentTransactions}
+                        lang={lang}
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* RIGHT COLUMN */}
                 <div className="dash-right-column">
                   {/* Active Staff */}
-                  <div className="ui-card kpi-icon-card">
+                  <div className="ui-card kpi-icon-card admin-card-anim anim-delay-4">
                     <div className="kpi-big-icon">
                       <svg
                         width="22"
@@ -345,7 +371,7 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                   </div>
 
                   {/* Total Products */}
-                  <div className="ui-card kpi-icon-card">
+                  <div className="ui-card kpi-icon-card admin-card-anim anim-delay-5">
                     <div
                       className="kpi-big-icon"
                       style={{
@@ -375,74 +401,94 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
                   </div>
 
                   {/* Payment Methods Breakdown */}
+                  <div className="admin-card-anim anim-delay-6">
                   <PaymentMethodsBar
                     qrisCount={data.paymentBreakdown.countQris}
                     cashCount={data.paymentBreakdown.countCash}
                     lang={lang}
                   />
+                  </div>
 
                   {/* Low Stock Alert */}
+                  <div className="admin-card-anim anim-delay-7">
                   <LowStockAlert
                     items={data.lowStockProducts}
                     lang={lang}
                   />
+                  </div>
                 </div>
               </div>
             </section>
           )}
 
           {/* Tab 2: Riwayat Transaksi */}
-          {activeTab === "tabRiwayat" && (
-            <section className="dashboard-content-body">
+          {activeTab === TAB_KEYS.RIWAYAT && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
               <TransactionsHistoryTab lang={lang} />
             </section>
           )}
 
           {/* Tab 3: Laporan Penjualan & Keuangan */}
-          {activeTab === "tabLaporan" && (
-            <section className="dashboard-content-body">
+          {activeTab === TAB_KEYS.LAPORAN && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
               <ReportsTab lang={lang} />
             </section>
           )}
 
-          {/* Tab 4: User Management / Kasir & Staff */}
-          {activeTab === "tabKasirStaff" && (
-            <section className="dashboard-content-body">
+          {/* Tab 4: Katalog Produk */}
+          {activeTab === TAB_KEYS.PRODUK && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
+              <ProductsTab lang={lang} />
+            </section>
+          )}
+
+          {/* Tab 5: Kategori Produk */}
+          {activeTab === TAB_KEYS.KATEGORI && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
+              <CategoriesTab lang={lang} />
+            </section>
+          )}
+
+          {/* Tab 6: User Management / Kasir & Staff */}
+          {activeTab === TAB_KEYS.KASIR_STAFF && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
               <StaffManagementTab lang={lang} />
             </section>
           )}
 
-          {/* Tab 5: Settings */}
-          {activeTab === "tabPengaturan" && (
-            <section className="dashboard-content-body">
+          {/* Tab 7: Settings */}
+          {activeTab === TAB_KEYS.PENGATURAN && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
               <SettingsTab lang={lang} />
             </section>
           )}
 
-          {/* Tab 6: Analytics & Business Intelligence */}
-          {activeTab === "tabAnalytik" && (
-            <section className="dashboard-content-body">
+          {/* Tab 8: Analytics & Business Intelligence — FIX: was "tabAnalytik" (typo), now TAB_KEYS.ANALYTICS */}
+          {activeTab === TAB_KEYS.ANALYTICS && (
+            <section className="dashboard-content-body" data-reveal="up" data-reveal-delay="0">
               <AnalyticsTab lang={lang} kodeToko={data.user?.kodeToko ?? ""} />
             </section>
           )}
 
-          {/* Placeholder for any other tabs not yet implemented */}
-          {activeTab !== "tabDashboard" &&
-            activeTab !== "tabRiwayat" &&
-            activeTab !== "tabLaporan" &&
-            activeTab !== "tabKasirStaff" &&
-            activeTab !== "tabPengaturan" &&
-            activeTab !== "tabAnalytik" && (
+          {/* Fallback placeholder for any unrecognised tab key */}
+          {activeTab !== TAB_KEYS.DASHBOARD &&
+            activeTab !== TAB_KEYS.RIWAYAT &&
+            activeTab !== TAB_KEYS.LAPORAN &&
+            activeTab !== TAB_KEYS.PRODUK &&
+            activeTab !== TAB_KEYS.KATEGORI &&
+            activeTab !== TAB_KEYS.KASIR_STAFF &&
+            activeTab !== TAB_KEYS.PENGATURAN &&
+            activeTab !== TAB_KEYS.ANALYTICS && (
             <div className="ui-card p-8 text-center py-16">
               <h2 className="text-base font-bold font-heading mb-2 text-[#141A17]">
-                Tab {activeTab.replace("tab", "")} — Coming Soon
+                Tab {(activeTab as string).replace("tab", "")} — Coming Soon
               </h2>
               <p className="text-xs text-[#737D78] max-w-md mx-auto mb-6">
                 Modul ini akan tersedia pada fase migrasi berikutnya.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveTab("tabDashboard")}
+                onClick={() => setActiveTab(TAB_KEYS.DASHBOARD)}
                 className="btn-new-trx"
               >
                 Kembali ke Overview Dashboard
@@ -451,6 +497,126 @@ export function AdminDashboardView({ initialData }: AdminDashboardViewProps) {
           )}
         </main>
       </div>
+
+      {/* Floating Scroll Controls with Smooth Scroll Animation */}
+      <AdminScrollControls lang={lang} />
+    </div>
+  );
+}
+
+function AdminScrollControls({ lang }: { lang: Language }) {
+  const [scrollPos, setScrollPos] = useState({ y: 0, max: 0, pct: 0 });
+  const [showControls, setShowControls] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = scrollHeight > 0 ? Math.min(100, Math.round((scrollY / scrollHeight) * 100)) : 0;
+
+      setScrollPos({ y: scrollY, max: scrollHeight, pct });
+      setShowControls(scrollHeight > 120);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    const observer = new ResizeObserver(() => {
+      handleScroll();
+    });
+    observer.observe(document.body);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      observer.disconnect();
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  if (!showControls) return null;
+
+  const isAtTop = scrollPos.y <= 60;
+  const isAtBottom = scrollPos.y >= scrollPos.max - 60;
+
+  return (
+    <div
+      className="admin-scroll-controls"
+      id="adminScrollControls"
+      role="navigation"
+      aria-label="Scroll Navigation Controls"
+    >
+      {/* Scroll Up Button */}
+      <button
+        type="button"
+        id="btnScrollToTop"
+        className={`admin-scroll-btn up ${isAtTop ? "is-disabled" : "animate-attention"}`}
+        onClick={scrollToTop}
+        disabled={isAtTop}
+        title={lang === "en" ? "Scroll to top" : "Scroll ke atas"}
+        aria-label="Scroll to top"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="admin-scroll-arrow up"
+        >
+          <path d="M18 15l-6-6-6 6" />
+        </svg>
+      </button>
+
+      {/* Indicator Track */}
+      <div className="admin-scroll-indicator" title={`${scrollPos.pct}%`}>
+        <span
+          className="admin-scroll-indicator-bar"
+          style={{ height: `${scrollPos.pct}%` }}
+        />
+      </div>
+
+      {/* Scroll Down Button */}
+      <button
+        type="button"
+        id="btnScrollToBottom"
+        className={`admin-scroll-btn down ${isAtBottom ? "is-disabled" : "animate-attention"}`}
+        onClick={scrollToBottom}
+        disabled={isAtBottom}
+        title={lang === "en" ? "Scroll to bottom" : "Scroll ke bawah"}
+        aria-label="Scroll to bottom"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="admin-scroll-arrow down"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
     </div>
   );
 }
