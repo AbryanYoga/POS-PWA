@@ -202,9 +202,9 @@ npm run lint          # Linting
 - [x] Business analytics (health score, SWOT, KPIs)
 - [x] Progressive Web App
 - [x] Multi-channel payment simulation (QRIS, BCA/BRI/Mandiri banks)
-- [ ] Offline-first mode (transaction queue via IndexedDB, automatic sync when back online)
-- [ ] Email verification on store registration
-- [ ] Push notifications for low stock
+- [x] Offline-first mode (transaction queue via IndexedDB, automatic sync when back online)
+- [x] Email verification on store registration
+- [x] Push notifications for low stock
 
 ---
 
