@@ -1,193 +1,191 @@
 # POS System — Modern Point of Sale PWA
 
-Sistem Point of Sale (kasir) multi-toko berbasis web, dibangun sebagai **Progressive Web App** yang bisa di-install di tablet/desktop layaknya aplikasi native. Awalnya dibangun di atas Google Apps Script + Google Sheets, lalu di-rebuild total menjadi aplikasi full-stack modern dengan Next.js dan PostgreSQL — dengan fokus utama pada **integritas transaksi** dan **keamanan multi-tenant**, bukan sekadar CRUD biasa.
+A multi-store, web-based Point of Sale (cashier) system, built as a **Progressive Web App** that can be installed on tablets/desktops just like a native app. Originally built on top of Google Apps Script + Google Sheets, then completely rebuilt into a modern full-stack application with Next.js and PostgreSQL — with a primary focus on **transaction integrity** and **multi-tenant security**, rather than just basic CRUD.
 
-> 🔗 **Live Demo:** `<isi link deploy Vercel di sini>`
-> 👤 **Akun Demo:** `<isi email demo>` / `<isi password demo>` — atau daftar toko sendiri di halaman `/register`
+> 🔗 **Live Demo:** https://pos-pwa-ebon.vercel.app
+> 🎥 **Video Demo:** https://youtu.be/L-OwnL9O7A8
 
----
+### Demo Accounts
 
-## 📸 Preview
-
-<!-- Tempel screenshot/GIF di sini setelah dideploy -->
-<!-- Contoh: ![Dashboard](./docs/screenshot-dashboard.png) -->
-
-| Login | Dashboard Admin | Cashier POS |
+| Role | Email | Password |
 |---|---|---|
-| _screenshot_ | _screenshot_ | _screenshot_ |
+| Admin | `demo.admin@posdemo.app` | `Demo1234` |
+| Cashier | `demo.kasir@posdemo.app` | `Demo1234` |
+
+**Store Code:** `DEMO01`
 
 ---
 
-## ✨ Tentang Project Ini
+## ✨ About This Project
 
-POS PWA adalah sistem kasir untuk bisnis retail/F&B (kafe, warung, toko kelontong, dst) yang mencakup seluruh alur operasional toko:
+POS PWA is a cashier system for retail/F&B businesses (cafes, small shops, grocery stores, etc.) that covers the entire store operations flow:
 
-- **Multi-toko (multi-tenant)** — satu aplikasi bisa melayani banyak toko sekaligus, masing-masing terisolasi penuh lewat `kode_toko`
-- **Kasir (POS)** yang cepat dan touch-friendly, dioptimalkan untuk tablet
-- **Dashboard admin** dengan data finansial real-time (bukan dummy data)
-- **Analitik bisnis otomatis** — health score, analisis SWOT, dan rekomendasi berbasis data penjualan asli
-- **Installable sebagai aplikasi** (PWA) — bisa dipakai offline-shell di tablet kasir tanpa perlu buka browser
+- **Multi-store (multi-tenant)** — a single application can serve many stores at once, each fully isolated via `kode_toko` (store code)
+- **Fast, touch-friendly POS (cashier)**, optimized for tablets
+- **Admin dashboard** with real-time financial data (not dummy data)
+- **Automated business analytics** — health score, SWOT analysis, and recommendations based on real sales data
+- **Installable as an app** (PWA) — can be used as an offline-shell on cashier tablets without needing to open a browser
 
-Project ini sengaja dibangun dengan standar keamanan dan integritas data setingkat aplikasi finansial produksi — bukan sekadar demo CRUD — karena menyangkut uang dan stok sungguhan.
+This project was deliberately built with security and data integrity standards on par with production-grade financial applications — not just a CRUD demo — because it deals with real money and real inventory.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Teknologi |
+| Layer | Technology |
 |---|---|
 | **Framework** | Next.js 15 (App Router), React 19, TypeScript |
 | **Styling** | Tailwind CSS, custom design system (CSS variables) |
 | **Database** | PostgreSQL (Supabase) |
 | **ORM** | Drizzle ORM |
-| **Autentikasi** | Auth.js (NextAuth) v5, JWT session, bcrypt |
+| **Authentication** | Auth.js (NextAuth) v5, JWT session, bcrypt |
 | **Font** | next/font/local — Archivo, IBM Plex Sans, IBM Plex Mono (self-hosted) |
 | **PWA** | Web App Manifest, Service Worker (custom, versioned cache) |
 | **Deployment** | Vercel |
-| **Icon** | lucide-react |
+| **Icons** | lucide-react |
 
 ---
 
-## 🔐 Yang Membuat Project Ini Berbeda
+## 🔐 What Sets This Project Apart
 
-Sebagian besar POS "belajar" berhenti di CRUD produk dan transaksi sederhana. Project ini menambahkan lapisan integritas data dan keamanan yang biasanya baru muncul di sistem produksi nyata:
+Most "learning" POS systems stop at simple product and transaction CRUD. This project adds a layer of data integrity and security that typically only appears in real production systems:
 
-- **Atomic transactions** — setiap checkout (kurangi stok, catat transaksi, catat item) dibungkus dalam satu database transaction; gagal sebagian = rollback semua
-- **Overselling prevention** — row-level locking (`SELECT ... FOR UPDATE`) mencegah dua kasir menjual stok terakhir yang sama secara bersamaan
-- **Deadlock-safe locking** — item di keranjang dikunci dalam urutan deterministik (`product_id` ascending) untuk mencegah deadlock saat checkout paralel
-- **Idempotency key** — mencegah transaksi ganda akibat double-klik atau retry jaringan
-- **Snapshot pricing** — laporan keuangan historis memakai harga *saat transaksi terjadi*, bukan harga produk saat ini, sehingga edit harga produk tidak pernah mengubah laporan masa lalu
-- **Instant session invalidation** — staff yang dinonaktifkan admin langsung ter-logout (token versioning + heartbeat polling), termasuk validasi ulang di server saat checkout diproses
-- **Last-admin-standing protection** — sistem menolak aksi yang bisa membuat satu toko kehilangan seluruh admin aktifnya
-- **Multi-tenant isolation** — setiap query di-scope ketat berdasarkan `kode_toko` dari session, dengan composite unique constraint untuk mencegah kebocoran data lintas toko
-- **Audit trail** — login gagal/berhasil, perubahan staff, registrasi toko baru, semuanya tercatat
-- **Rate limiting** — percobaan login dan registrasi toko dibatasi per IP untuk mencegah brute-force dan spam
+- **Atomic transactions** — every checkout (reducing stock, recording the transaction, recording items) is wrapped in a single database transaction; a partial failure rolls back everything
+- **Overselling prevention** — row-level locking (`SELECT ... FOR UPDATE`) prevents two cashiers from selling the same last unit of stock at the same time
+- **Deadlock-safe locking** — cart items are locked in a deterministic order (`product_id` ascending) to prevent deadlocks during parallel checkouts
+- **Idempotency key** — prevents duplicate transactions caused by double-clicks or network retries
+- **Price & category snapshotting** — historical financial reports use the price and category *as they were at the time of the transaction*, not the current product data, so editing a product's price/category never changes past reports
+- **Instant session invalidation** — staff deactivated by an admin are logged out immediately (token versioning + heartbeat polling), including re-validation on the server when checkout is processed
+- **Last-admin-standing protection** — the system rejects actions that would leave a store with no active admins at all
+- **Multi-tenant isolation** — every query is strictly scoped by the `kode_toko` (store code) from the session, with a composite unique constraint to prevent cross-store data leaks
+- **Audit trail** — failed/successful logins, staff changes, new store registrations — all recorded
+- **Rate limiting** — login and store registration attempts are limited per IP to prevent brute-force attacks and spam
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Key Features
 
-### Untuk Admin
-- Dashboard real-time (omset, laba bersih, tren penjualan, stok menipis)
-- Manajemen produk & kategori (CRUD, upload gambar, penyesuaian stok dengan jejak audit)
-- Manajemen staf/kasir (role admin/kasir, nonaktifkan akun, reset password)
-- Riwayat transaksi & laporan penjualan (filter periode, export CSV)
-- Analitik bisnis: Business Health Score, analisis SWOT otomatis, KPI strategis
-- Pengaturan toko: profil, tema warna, ukuran kertas struk
+### For Admins
+- Real-time dashboard (revenue, net profit, sales trends, low stock)
+- Product & category management (CRUD, image upload, stock adjustments with an audit trail)
+- Staff/cashier management (admin/cashier roles, deactivate accounts, password reset)
+- Transaction history & sales reports (filter by period, export to CSV)
+- Business analytics: Business Health Score, automated SWOT analysis, strategic KPIs
+- Store settings: profile, color theme, receipt paper size
 
-### Untuk Kasir
-- Katalog produk dengan pencarian & filter kategori
-- Keranjang belanja dengan kalkulasi otomatis
-- Pembayaran tunai (dengan kalkulasi kembalian) & non-tunai (QRIS/transfer)
-- Cetak struk thermal (58mm/80mm) & struk digital
-- Riwayat transaksi milik sendiri
+### For Cashiers
+- Product catalog with search & category filters
+- Shopping cart with automatic calculation
+- Cash payment (with change calculation) & non-cash payment (QRIS, BCA/BRI/Mandiri banks — simulated)
+- Thermal receipt printing (58mm/80mm) & digital receipts
+- Personal transaction history
 
-### Umum
-- Multi-bahasa (Indonesia/Inggris)
+### General
+- Multi-language (Indonesian/English)
 - Progressive Web App — installable, app shell caching
-- Pendaftaran toko mandiri (multi-tenant self-service)
+- Self-service store registration (multi-tenant self-service)
 
 ---
 
-## 📁 Struktur Project
+## 📁 Project Structure
 
 ```
 src/
 ├── app/
-│   ├── login/              # Halaman login
-│   ├── register/           # Pendaftaran toko baru
-│   ├── admin/               # Dashboard admin (SPA tab-based)
-│   ├── cashier/              # POS kasir + riwayat kasir
+│   ├── login/              # Login page
+│   ├── register/           # New store registration
+│   ├── admin/               # Admin dashboard (tab-based SPA)
+│   ├── cashier/              # Cashier POS + cashier history
 │   ├── api/auth/            # Auth.js route handler
 │   └── manifest.ts          # PWA manifest
 ├── components/
-│   ├── admin/                # Komponen per-tab admin (dashboard, produk, kategori, dst)
-│   ├── cashier/               # Komponen POS
+│   ├── admin/                # Per-tab admin components (dashboard, products, categories, etc.)
+│   ├── cashier/               # POS components
 │   ├── auth/                  # Session heartbeat
 │   ├── pwa/                   # PWA registrar
-│   └── ui/                    # Komponen shared (toast, dst)
+│   └── ui/                    # Shared components (toast, etc.)
 ├── db/
-│   ├── schema.ts              # Skema Drizzle (10 tabel core)
-│   └── index.ts               # Koneksi database
+│   ├── schema.ts              # Drizzle schema (10 core tables)
+│   └── index.ts               # Database connection
 ├── lib/
-│   ├── actions/                # Server Actions (auth, pos, staff, product, dst)
-│   ├── auth.ts / auth.config.ts # Konfigurasi Auth.js (Node & Edge runtime)
-│   ├── analytics.ts             # Engine kalkulasi business analytics
-│   └── trx-number.ts            # Generator nomor transaksi (advisory lock)
-├── fonts/                       # Font self-hosted
-└── middleware.ts                # Proteksi route berbasis role
+│   ├── actions/                # Server Actions (auth, pos, staff, product, etc.)
+│   ├── auth.ts / auth.config.ts # Auth.js configuration (Node & Edge runtime)
+│   ├── analytics.ts             # Business analytics calculation engine
+│   └── trx-number.ts            # Transaction number generator (advisory lock)
+├── fonts/                       # Self-hosted fonts
+└── middleware.ts                # Role-based route protection
 ```
 
 ---
 
-## 🧱 Skema Database
+## 🧱 Database Schema
 
-10 tabel inti, semua dengan isolasi multi-tenant via `kode_toko`:
+10 core tables, all with multi-tenant isolation via `kode_toko` (store code):
 
-| Tabel | Fungsi |
+| Table | Purpose |
 |---|---|
-| `users` | Akun admin & kasir |
-| `store_settings` | Konfigurasi per toko |
-| `categories` | Kategori produk |
-| `products` | Katalog produk |
-| `transactions` | Header transaksi penjualan |
-| `transaction_items` | Detail item per transaksi (snapshot harga) |
-| `stock_movements` | Jejak audit pergerakan stok |
-| `expenses` | Pengeluaran operasional toko |
-| `audit_logs` | Jejak aktivitas keamanan |
+| `users` | Admin & cashier accounts |
+| `store_settings` | Per-store configuration |
+| `categories` | Product categories |
+| `products` | Product catalog |
+| `transactions` | Sales transaction headers |
+| `transaction_items` | Per-transaction item details (price & category snapshot) |
+| `stock_movements` | Stock movement audit trail |
+| `expenses` | Store operational expenses |
+| `audit_logs` | Security activity trail |
 
-Relasi utama: `users → transactions → transaction_items → products → categories`
+Main relation: `users → transactions → transaction_items → products → categories`
 
 ---
 
-## ⚙️ Menjalankan Secara Lokal
+## ⚙️ Running Locally
 
-### Prasyarat
+### Prerequisites
 - Node.js 18+
-- Akun [Supabase](https://supabase.com) (gratis) untuk PostgreSQL
+- A [Supabase](https://supabase.com) account (free) for PostgreSQL
 
-### Instalasi
+### Installation
 
 ```bash
-# 1. Clone repository
-git clone <url-repo-anda>
+# 1. Clone the repository
+git clone <your-repo-url>
 cd pos-nextjs
 
 # 2. Install dependencies
 npm install
 
-# 3. Salin dan isi environment variables
+# 3. Copy and fill in environment variables
 cp .env.example .env.local
 ```
 
 ### Environment Variables
 
-| Variable | Deskripsi |
+| Variable | Description |
 |---|---|
-| `DATABASE_URL` | Connection string Supabase (Transaction Pooler, port 6543) |
-| `DIRECT_URL` | Connection string Supabase (Direct, port 5432) — khusus migration |
-| `AUTH_SECRET` | Secret enkripsi JWT — generate via `openssl rand -base64 32` |
-| `AUTH_URL` / `NEXTAUTH_URL` | Base URL aplikasi (`http://localhost:3000` untuk lokal) |
+| `DATABASE_URL` | Supabase connection string (Transaction Pooler, port 6543) |
+| `DIRECT_URL` | Supabase connection string (Direct, port 5432) — for migrations only |
+| `AUTH_SECRET` | JWT encryption secret — generate via `openssl rand -base64 32` |
+| `AUTH_URL` / `NEXTAUTH_URL` | Application base URL (`http://localhost:3000` for local) |
 
 ```bash
-# 4. Jalankan migration ke database
+# 4. Run the migration to the database
 npm run db:push
 
-# 5. (Opsional) Isi data awal untuk testing
+# 5. (Optional) Seed initial data for testing
 npm run db:seed
 
-# 6. Jalankan development server
+# 6. Run the development server
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) — akan redirect otomatis ke halaman login.
+Open [http://localhost:3000](http://localhost:3000) — it will automatically redirect to the login page.
 
-### Script Lain
+### Other Scripts
 
 ```bash
-npm run build       # Build production
-npm run start        # Jalankan production build
-npm run db:studio    # Buka Drizzle Studio (GUI database)
+npm run build       # Production build
+npm run start        # Run production build
+npm run db:studio    # Open Drizzle Studio (database GUI)
 npm run lint          # Linting
 ```
 
@@ -195,25 +193,27 @@ npm run lint          # Linting
 
 ## 🗺️ Roadmap
 
-- [x] Autentikasi multi-tenant & role-based access control
-- [x] Dashboard admin dengan data real-time
-- [x] Cashier POS dengan transaksi atomic
-- [x] Manajemen produk, kategori, dan stok
-- [x] Riwayat transaksi & laporan keuangan
-- [x] Manajemen staf & pengaturan toko
-- [x] Business analytics (health score, SWOT, KPI)
+- [x] Multi-tenant authentication & role-based access control
+- [x] Admin dashboard with real-time data
+- [x] Cashier POS with atomic transactions
+- [x] Product, category, and stock management
+- [x] Transaction history & financial reports
+- [x] Staff management & store settings
+- [x] Business analytics (health score, SWOT, KPIs)
 - [x] Progressive Web App
-- [ ] Offline-first mode (antrian transaksi via IndexedDB, sinkronisasi otomatis saat online kembali)
-- [ ] Verifikasi email saat registrasi toko
-- [ ] Notifikasi push untuk stok menipis
+- [x] Multi-channel payment simulation (QRIS, BCA/BRI/Mandiri banks)
+- [ ] Offline-first mode (transaction queue via IndexedDB, automatic sync when back online)
+- [ ] Email verification on store registration
+- [ ] Push notifications for low stock
 
 ---
 
-## 📄 Lisensi
+## 📄 License
 
-Project ini dibuat untuk keperluan portfolio/pembelajaran.
+This project was created for portfolio/learning purposes.
 
+---
 
-## 👤 Kontak
+## 👤 Contact
 
-Dibangun oleh **[Abryan Yoga Pratama]**
+Built by **Abryan Yoga Pratama**
