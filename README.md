@@ -216,4 +216,5 @@ This project was created for portfolio/learning purposes.
 
 ## 👤 Contact
 
-Built by **Abryan Yoga Pratama**
+Built by **Abryan Yoga Pratama** 
+Cek Portolio saya di [https://portfolio.edusoftcenter.com/contributors/abryan-yoga-pratama]
